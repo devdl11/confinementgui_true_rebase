@@ -7,10 +7,11 @@ function createWindow () {
     height: 800,
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true
+      enableRemoteModule: true,
     }
   })
 
+  win.setResizable(false)
   win.setMenuBarVisibility(false)
 
   //load the index.html from a url
