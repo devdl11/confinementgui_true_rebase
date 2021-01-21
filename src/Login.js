@@ -13,6 +13,7 @@ class Login extends React.Component {
         super(props)
         this.username_in = React.createRef()
         this.password_in = React.createRef()
+        this.buttonsub = React.createRef()
 
         this.state = {
             logged:false,
@@ -37,9 +38,9 @@ class Login extends React.Component {
             })
             return
         }
-        el.disabled = true
+        this.buttonsub.current.disabled = true
         edlog(username, password, (result) => {
-            el.disabled = false
+            this.buttonsub.current.disabled = false
             if(result === undefined){
                 return;
             }
@@ -57,7 +58,6 @@ class Login extends React.Component {
                 dat.username = username
                 dat.pearlURL = result.getPearltreesURL()
                 SelfCrypto.data = dat
-                console.log(SelfCrypto.data)
                 SelfCrypto.saveDate()
             }
             this.setState({
@@ -81,7 +81,7 @@ class Login extends React.Component {
                         <label htmlFor="password">Mot de passe: </label>    
                         <input name="password" maxLength="30" id="password" type="password" ref={this.password_in}></input>
                         <br/>
-                        <input id="submit" value="Se connecter" type="button" onClick={(el) => {this.EDlogin(el)}}></input>
+                        <input id="submit" value="Se connecter" type="button" ref={this.buttonsub} onClick={(el) => {this.EDlogin(el)}}></input>
                     </div>
                 </div>
                 );

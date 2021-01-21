@@ -1,8 +1,9 @@
 import './App.css';
 import './Login.css';
 import './Menu.css';
-import React from 'react';
+import React from 'react'
 import Menu from "./Menu"
+import Loading from "./Loading"
 import * as cryp from './crypto';
 import Login from "./Login"
 import {login as edlog} from "./ed-api"
@@ -17,7 +18,7 @@ class App extends React.Component {
     this.state = {
       loaded: false
     }
-    this.menush = null
+    this.menush = <Loading/>
   }
 
   componentDidMount(){

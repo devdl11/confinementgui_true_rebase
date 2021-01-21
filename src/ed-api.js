@@ -37,7 +37,6 @@ export async function login(username, password, callback){
         },
         dataType: "json"
     }, (err, data, res)=>{
-        console.log(data)
         if(err|| data.code === 505){
             dialog.showMessageBoxSync({
                 type:"warning",

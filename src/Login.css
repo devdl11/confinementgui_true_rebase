@@ -42,3 +42,7 @@
   @apply bg-blue-400;
 }
 
+.Login > .content > #submit:disabled {
+  @apply bg-blue-300;
+}
+
