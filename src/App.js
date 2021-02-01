@@ -23,7 +23,6 @@ class App extends React.Component {
 
   componentDidMount(){
     cryp.SelfCrypto.__init__(()=>{
-      console.log(cryp.SelfCrypto.data)
       if(cryp.SelfCrypto.data === undefined){
         this.menush = <Login/>
         this.setState({

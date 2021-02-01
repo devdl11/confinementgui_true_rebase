@@ -1,10 +1,8 @@
 const crypt = require("crypto-js")
 const filemanager = require("fs")
-const sys = require('util')
-const exec = require('child_process').execSync;
 const sysinfo = require("systeminformation")
 
-const electron = window.require('electron');
+const electron = require('electron');
 const remote = electron.remote
 
 class AppData {
@@ -79,7 +77,8 @@ class AppData {
 
 class SelfCrypto {
     static getDirectoryData() {
-        return (remote.process.env.APPDATA || (remote.process.platform === 'darwin' ? remote.process.env.HOME + '/Library/Preferences' : remote.process.env.HOME + "/.local/share")) + "/ConfinementGUI"
+        return (electron.app || electron.remote.app).getPath("userData")
+        // return (remote.process.env.APPDATA || (remote.process.platform === 'darwin' ? remote.process.env.HOME + '/Library/Preferences' : remote.process.env.HOME + "/.local/share")) + "/ConfinementGUI"
     }
 
     static data = undefined
@@ -110,7 +109,6 @@ class SelfCrypto {
                     let decrypted = crypt.AES.decrypt(data,key)
                     if (decrypted.toString(crypt.enc.Utf8).indexOf("10011101")) {
                         SelfCrypto.data = new AppData(decrypted.toString(crypt.enc.Utf8))
-                        console.log(SelfCrypto.data)
                     }
                     callback()
                 })

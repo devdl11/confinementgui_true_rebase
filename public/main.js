@@ -1,8 +1,10 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
+
+let worker, mainwin
 
 function createWindow () {
   // Create the browser window.
-  const win = new BrowserWindow({
+  mainwin = new BrowserWindow({
     width: 1000,
     height: 800,
     webPreferences: {
@@ -11,15 +13,61 @@ function createWindow () {
     }
   })
 
-  win.setResizable(false)
-  win.setMenuBarVisibility(false)
+  mainwin.setResizable(false)
+  mainwin.setMenuBarVisibility(false)
 
   //load the index.html from a url
-  win.loadURL('http://localhost:3000');
+  mainwin.loadURL('http://localhost:3000');
 
+  worker = new BrowserWindow({
+    show:false,
+    webPreferences:{
+      nodeIntegration: true,
+      enableRemoteModule: true
+    }
+  })
+  worker.loadFile("./public/worker.html")
+  worker.webContents.openDevTools()
+  mainwin.on("closed", ()=>{
+    worker.close()
+  })
   // Open the DevTools.
 //   win.webContents.openDevTools()
 }
+
+
+ipcMain.on("run-remote-download", (event, args)=>{
+    if(typeof worker === 'undefined'){
+      console.error("worker not available")
+    }else{
+      worker.webContents.send("run-download", args)
+    }
+})
+
+ipcMain.on("get-edfiles", (event, args)=>{
+  if(typeof worker === 'undefined'){
+    console.error("worker not available")
+  }else{
+    worker.webContents.send("get-edfiles", args)
+  }
+})
+
+ipcMain.on("take-edfiles", (event,args)=>{
+  if(typeof mainwin === 'undefined'){
+    console.error("main not available")
+  }else{
+    mainwin.webContents.send("take-edfiles", args)
+  }
+})
+
+ipcMain.on("take-homeworks", (event,args)=>{
+  if(typeof mainwin === 'undefined'){
+    console.error("main not available")
+  }else{
+    mainwin.webContents.send("take-homeworks", args)
+  }
+})
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

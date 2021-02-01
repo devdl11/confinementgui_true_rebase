@@ -1,16 +1,50 @@
+import "./Menu.css"
+import "./composants Menu/BarreNav.css"
+import "./Menus/EDFiles.css"
+import EDFiles from "./Menus/EDFiles"
 import React from 'react';
+import BarreNav from "./composants Menu/BarreNav"
 const electron = require('electron');
+const ipcRender = electron.ipcRenderer
 const remote = electron.remote
+
 const {dialog} = remote
 
 class Menu extends React.Component{
     constructor(props){
         super(props)
-        this.ed_inst = props.ed
+        this.ed_inst = props.ed_inst
+        this.menus = {
+            F_ED: <EDFiles user={this.ed_inst.user_data} />
+        }
+        this.state = {
+            menu: null
+        }
+        console.log(this.ed_inst)
+        ipcRender.send("run-remote-download", {
+            edinstance: this.ed_inst
+        })
+
+        this.onChangeMenu = this.onChangeMenu.bind(this)
+    }
+
+    onChangeMenu(menu){
+        if(Object.keys(this.menus).includes(menu)){
+            this.setState({
+                menu: this.menus[menu]
+            })
+        }
     }
 
     render(){
-        return <h1>COucou</h1>
+        return (
+            <div>
+             <BarreNav name={this.ed_inst.user_data.prenom + " " + this.ed_inst.user_data.nom} liftup={this.onChangeMenu}/>
+             <div className="MenuDisplayer">
+                 {this.state.menu}
+             </div>
+            </div>
+        )
     }
 }
 

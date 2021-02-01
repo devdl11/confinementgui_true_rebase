@@ -16,7 +16,6 @@ class Login extends React.Component {
         this.buttonsub = React.createRef()
 
         this.state = {
-            logged:false,
             edint: null
         }
         //defined bind
@@ -61,7 +60,6 @@ class Login extends React.Component {
                 SelfCrypto.saveDate()
             }
             this.setState({
-                logged: true,
                 edint: result
             })
         })
@@ -69,7 +67,7 @@ class Login extends React.Component {
     }
 
     render() {
-        if(!this.state.logged){
+        if(this.state.edint === null){
             return (
                 <div className="Login">
                     <div className="titre">Login EcoleDirecte</div>
