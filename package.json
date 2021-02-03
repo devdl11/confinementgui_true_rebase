@@ -8,13 +8,14 @@
   "main": "public/main.js",
   "dependencies": {
     "@craco/craco": "^6.0.0",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "@tailwindcss/postcss7-compat": "^2.0.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "autoprefixer": "^9.8.6",
     "crypto-js": "^4.0.0",
-    "electron": "^11.2.0",
     "esm": "^3.2.25",
     "postcss": "^7.0.35",
     "react": "^17.0.1",
@@ -31,7 +32,11 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
-    "electron-dev": "electron ."
+    "electron-dev": "electron .",
+    "build:electron": "mkdir build/src && robocopy electron build/electron /S & robocopy src/shared build/src/shared /S",
+    "watch:electron": "npm-watch",
+    "build2": "set GENERATE_SOURCEMAP=false && react-scripts build",
+    "package": "electron-builder build --win -c.extraMetadata.main=build/main.js --publish never"
   },
   "eslintConfig": {
     "extends": [
@@ -52,6 +57,9 @@
     ]
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.13",
+    "@babel/core": "^7.12.13",
+    "electron-builder": "^22.9.1",
     "stylelint-config-recommended": "^3.0.0"
   }
 }

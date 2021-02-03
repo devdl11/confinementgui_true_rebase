@@ -73,8 +73,8 @@ class EDFiles extends React.Component{
         return (
             <div className="EDFiles">
                <div className="Barrnav">
-                   {/* <div className="Titre">Fichiers Ecole directe</div> */}
-                   <div className="Reload">Recharger</div>
+                   <div className="Titre">Fichiers Ecole directe</div>
+                   {/* <div className="Reload">Recharger</div> */}
                </div>
                <div className="AllFiles">
                     {this.list_f}

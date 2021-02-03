@@ -17,24 +17,26 @@ class BarreNav extends React.Component{
         this.OnMenuChange = this.OnMenuChange.bind(this)
     }
 
-    OnMenuChange(){
-        this.menuSelectedCallback(this.state.menu)
+    OnMenuChange(element){
+        this.menuSelectedCallback(element)
     }
 
     OnClickMenuHandler(el){
         if(Object.keys(this.menus).includes(this.state.menu)){
             this.menus[this.state.menu].setActivated(true)
         }
+        // console.log(el)
+        // console.log("nav")
         this.menus[el].setActivated(false)
         this.setState({
             menu:el
         })
-        this.OnMenuChange()
+        this.OnMenuChange(el)
     }
     
     componentDidMount(){
         this.menus[this.state.menu].setActivated(false)
-        this.OnMenuChange()
+        this.OnMenuChange(this.state.menu)
     }
 
     render(){

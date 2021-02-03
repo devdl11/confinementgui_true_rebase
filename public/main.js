@@ -1,4 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
+const path = require('path');
+const url = require('url');
 
 let worker, mainwin
 
@@ -17,7 +19,13 @@ function createWindow () {
   mainwin.setMenuBarVisibility(false)
 
   //load the index.html from a url
-  mainwin.loadURL('http://localhost:3000');
+  // mainwin.loadURL('http://localhost:3000');
+  const startUrl = process.env.ELECTRON_START_URL || url.format({
+    pathname: path.join(__dirname, '../index.html'),
+    protocol: 'file:',
+    slashes: true,
+  });
+  mainwin.loadFile(startUrl);
 
   worker = new BrowserWindow({
     show:false,
@@ -52,6 +60,22 @@ ipcMain.on("get-edfiles", (event, args)=>{
   }
 })
 
+ipcMain.on("get-homeworks", (event, args)=>{
+  if(typeof worker === 'undefined'){
+    console.error("worker not available")
+  }else{
+    worker.webContents.send("get-homeworks", args)
+  }
+})
+
+ipcMain.on("get-matieres", (event, args)=>{
+  if(typeof worker === 'undefined'){
+    console.error("worker not available")
+  }else{
+    worker.webContents.send("get-matieres", args)
+  }
+})
+
 ipcMain.on("take-edfiles", (event,args)=>{
   if(typeof mainwin === 'undefined'){
     console.error("main not available")
@@ -65,6 +89,14 @@ ipcMain.on("take-homeworks", (event,args)=>{
     console.error("main not available")
   }else{
     mainwin.webContents.send("take-homeworks", args)
+  }
+})
+
+ipcMain.on("take-matieres", (event,args)=>{
+  if(typeof mainwin === 'undefined'){
+    console.error("main not available")
+  }else{
+    mainwin.webContents.send("take-matieres", args)
   }
 })
 

@@ -1,7 +1,11 @@
 import "./Menu.css"
 import "./composants Menu/BarreNav.css"
 import "./Menus/EDFiles.css"
+import "./Menus/EDAgenda.css"
+import "./Menus/Planning.css"
 import EDFiles from "./Menus/EDFiles"
+import EDAgenda from "./Menus/EDAgenda"
+import Planning from "./Menus/Planning"
 import React from 'react';
 import BarreNav from "./composants Menu/BarreNav"
 const electron = require('electron');
@@ -15,7 +19,9 @@ class Menu extends React.Component{
         super(props)
         this.ed_inst = props.ed_inst
         this.menus = {
-            F_ED: <EDFiles user={this.ed_inst.user_data} />
+            F_ED: <EDFiles user={this.ed_inst.user_data} />,
+            AGND: <EDAgenda user={this.ed_inst.user_data} />,
+            PLAN: <Planning ed={this.ed_inst}/>
         }
         this.state = {
             menu: null
@@ -29,6 +35,7 @@ class Menu extends React.Component{
     }
 
     onChangeMenu(menu){
+        // console.log(menu)
         if(Object.keys(this.menus).includes(menu)){
             this.setState({
                 menu: this.menus[menu]

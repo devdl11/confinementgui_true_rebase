@@ -1,4 +1,6 @@
 import React from 'react';
+import DateMenuSelector from "./edAgendaComp/DateMenuSelector"
+import DateMenu from "./edAgendaComp/DateMenu"
 const electron = require('electron');
 const remote = electron.remote
 const {ipcRenderer} = electron
@@ -26,48 +28,65 @@ class EDAgenda extends React.Component{
         })
     }
 
-    onMenuClick(menu){
+    onMenuClick(date, homeworks){
+        this.backup = this.list_h
+        this.list_h = <DateMenu callback={this.getBackOnclick} date={date} homeworks={homeworks}/>
+        this.setState({
+            submenu: date
+        })
     }
 
     componentDidMount(){
         
         ipcRenderer.on("take-homeworks", (event, args)=>{
             if(args.length === 0){
-                this.list_f = <div className="NoHomeworks">Aucun devoirs</div>
+                this.list_h = <div className="NoHomeworks">Aucun devoir</div>
             }else{
                 this.menus = {}
-                this.list_f = ""
-                for (let file of args){
-                    if(!Object.keys(this.menus).includes(file["matiere"])){
-                        this.menus[file["matiere"]] = []
+                this.list_h = ""
+                for (let date of Object.keys(args)){
+                    if(!Object.keys(this.menus).includes(date) && Object.keys(args[date]).length > 0){
+                        this.menus[date] = {}
+                    }else if(Object.keys(args[date]).length === 0){
+                        continue
                     }
-                    if(!this.menus[file["matiere"]].includes(file)){
-                        this.menus[file["matiere"]].push(file)
+                    for(let mat of Object.keys(args[date])){
+                        if(!Object.keys(this.menus[date]).includes(mat)){
+                            this.menus[date][mat] = args[date][mat]
+                        }
                     }
+                    
                 }
-                this.list_f = Object.keys(this.menus).map((key)=>{
-                    return <div className="MatiereButton" onClick={this.onMenuClick} key={key}>{key}</div>
+                let keys = Object.keys(this.menus)
+                keys.sort((a,b)=>{
+                    a = a.split('-').join('');
+                    b = b.split('-').join('');
+                    return a.localeCompare(b); 
+                })
+                keys = keys.reverse()
+                this.list_h = keys.map((key)=>{
+                    return <DateMenuSelector callback={this.onMenuClick} key={key} date={key} homeworks={this.menus[key]}/>
                 })
             }
             this.setState({
-                files: args
+                homeworks: args
             })
         })
-        ipcRenderer.send("get-edfiles", {})
+        ipcRenderer.send("get-homeworks", {})
     }
 
     componentWillUnmount(){
-        ipcRenderer.removeAllListeners("take-edfiles")
+        ipcRenderer.removeAllListeners("take-homeworks")
     }
 
     render(){
         return (
-            <div className="EDFiles">
+            <div className="EDAgenda">
                <div className="Barrnav">
                    <div className="Titre">Devoirs Ecole directe</div>
                </div>
-               <div className="AllFiles">
-                    {this.list_f}
+               <div className="AllDates">
+                    {this.list_h}
                </div>
             </div>
         )

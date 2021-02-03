@@ -1,4 +1,3 @@
-const { x64 } = require('crypto-js');
 const filemanager = require("fs")
 const electron = require('electron');
 const remote = electron.remote
@@ -18,6 +17,10 @@ const ED_URL = {
     },
     downloadFile : {
         url : "telechargement.awp?verbe=get&",
+        method: "post"
+    },
+    emploiedutemps:{
+        url:":typeuser:/:eleveid:/emploidutemps.awp?verbe=get&",
         method: "post"
     }
 }
@@ -65,6 +68,47 @@ class ED_Instance{
         }else{
             callback(200)
         }
+    }
+
+    async getEDT(callback){
+        let today = new Date()
+        let diff = today.getDay() - 1
+        if(diff < 0){
+            diff = 6
+        }
+        let startweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()- diff)
+        let month = startweek.getMonth() + 1
+        month = month < 10? "0" + String(month): month
+        let day = startweek.getDate()
+        day = day < 10 ? "0" + String(day):day
+        let str_start = String(startweek.getFullYear()) + "-" + String(month) + "-" + String(day)
+        day = startweek.getDay() + 7
+        day = day < 10 ? "0" + String(day):day
+        let str_end = String(startweek.getFullYear()) + "-" + String(month) + "-" + String(day)
+        // console.log("data={\"dateDebut\":\""+str_start +"\", \"dateFin\":\""+str_end+"\", \"avecTrous\": false, \"token\":\"" + this.token+"\"}")
+
+        await urllib.request(API_URL + ED_URL.emploiedutemps.url.replace(":typeuser:", this.user_data["typeCompte"]).replace(":eleveid:", this.user_data["id"]),{
+            method: ED_URL.downloadFile.method,
+                content: "data={\"dateDebut\":\""+str_start +"\", \"dateFin\":\""+str_end+"\", \"avecTrous\": false, \"token\":\"" + this.token+"\"}",
+                headers:{
+                    "content-type":"application/x-www-form-urlencoded"
+                },
+                dataType:"json"
+        }, (err, data, res)=>{
+            if(err || data.code === 525){
+                login(this.username, this.password, (result)=>{
+                    if(typeof result === undefined){
+                        remote.app.quit()
+                    }else{
+                        this.user_data = result.user_data
+                        this.token = result.token
+                        this.getEDT(callback)
+                    }
+                })
+            }else{
+                callback(data.data)
+            }
+        })
     }
 
     async getHomeWorkByDate(date, callback){

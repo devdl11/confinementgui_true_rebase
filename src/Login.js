@@ -2,8 +2,9 @@ import './App.css';
 import './Menu.css';
 import Menu from "./Menu"
 import React from 'react';
-import {login as edlog} from "./ed-api"
+// import {login as edlog} from "./ed-api"
 import {SelfCrypto, AppData} from "./crypto"
+const {login} =  require("./ed-api")
 const electron = require('electron');
 const remote = electron.remote
 const {dialog} = remote
@@ -38,7 +39,7 @@ class Login extends React.Component {
             return
         }
         this.buttonsub.current.disabled = true
-        edlog(username, password, (result) => {
+        login(username, password, (result) => {
             this.buttonsub.current.disabled = false
             if(result === undefined){
                 return;

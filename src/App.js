@@ -6,8 +6,7 @@ import Menu from "./Menu"
 import Loading from "./Loading"
 import * as cryp from './crypto';
 import Login from "./Login"
-import {login as edlog} from "./ed-api"
-
+const {login} =  require("./ed-api")
 const electron = window.require('electron');
 const remote = electron.remote
 const { BrowserWindow } = remote
@@ -29,7 +28,7 @@ class App extends React.Component {
           loaded:true
         })
       }else{
-        edlog(cryp.SelfCrypto.data.username, cryp.SelfCrypto.data.password, (result)=>{
+        login(cryp.SelfCrypto.data.username, cryp.SelfCrypto.data.password, (result)=>{
           if(result === undefined){
             this.menush = <Login/>
           }

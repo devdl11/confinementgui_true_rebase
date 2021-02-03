@@ -55,7 +55,7 @@
 }
 
 .EDFiles > .AllFiles > div > .MatiereMenu > .DatesList{
-    @apply bg-blue-800;
+    @apply bg-blue-700;
 }
 
 .DatesList {
@@ -75,7 +75,7 @@
 
 .FileBarre{
     border-radius: 8px;
-    @apply bg-green-700 text-lg flex flex-row justify-between relative;
+    @apply bg-green-600 text-lg flex flex-row justify-between relative;
 }
 
 .FileBarre > .FileName{
@@ -84,7 +84,7 @@
 }
 
 .FileBarre > .OpenButton:hover{
-    @apply bg-green-600;
+    @apply bg-yellow-500;
 }
 
 .FileBarre > .Unavailable {

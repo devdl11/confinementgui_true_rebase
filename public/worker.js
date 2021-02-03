@@ -25,37 +25,129 @@ let data = new Storage({
     }
 })
 
+let planning_data = new Storage({
+    configName: "planning",
+    defaults:{
+        days: {},
+        matieres: []
+    }
+})
+
+let edt_data = new Storage({
+    configName: "edt",
+    defaults:{
+        matieres: []
+    }
+})
+
+async function getPlanning(ed){
+    let tmpmat = planning_data.get("matieres")
+    if(typeof tmpmat === "undefined"){
+        tmpmat = []
+    }
+    let finalMatiere = []
+    let matnames = []
+    let matnames_pushed = []
+    let currentMat = {}
+    for(let mat of tmpmat){
+        matnames.push(mat["nom"])
+        currentMat[mat["nom"]] = mat
+    }
+
+
+    await ed.getEDT((data)=>{
+        // console.log(data)
+        edt_data.set("matieres", data)
+        let matieres = {}
+        for(let mati of data){
+            let date = mati["start_date"].split(" ")[0]
+            if(!Object.keys(matieres).includes(date)){
+                matieres[date] = []
+            }
+            matieres[date].push(mati)
+        }
+        let finalData = {}
+        for(let key of Object.keys(matieres)){
+            let splitted = key.split("-")
+            let date = new Date(splitted[0], splitted[1]-1, splitted[2])
+            let day = date.getDay()
+            finalData[day] = []
+            for(let mat of matieres[key]){
+                let heure_dbt = mat["start_date"].split(" ")[1]
+                let heure_fin = mat["end_date"].split(" ")[1]
+                let matiere = {
+                    nom: mat["matiere"],
+                    prof: mat["prof"],
+                    url: null,
+                    rappel:true
+                }
+                if(!matnames_pushed.includes(matiere.nom + matiere.prof)){
+                    if(!matnames.includes(matiere.nom)){
+                        finalMatiere.push({
+                            nom: matiere.nom,
+                            prof: matiere.prof,
+                            url: null,
+                            rappel: true
+                        })
+                    }else{
+                        finalMatiere.push(currentMat[matiere.nom])
+                    }
+                    matnames_pushed.push(matiere.nom + matiere.prof)
+                }
+                
+                finalData[day].push({
+                        nom: matiere.nom,
+                        prof: matiere.prof,
+                        debut: heure_dbt,
+                        fin: heure_fin
+                })
+            }
+            if(finalData[day].length === 1){
+                delete finalData[day]
+            }
+        }
+        // let ids = finalMatiere.map(o => o.id)
+        // finalMatiere = finalMatiere.filter(({id}, index) => !ids.includes(id, index + 1))
+
+        planning_data.set("days", finalData)
+        planning_data.set("matieres", finalMatiere)
+    })
+    
+}
 
 
 async function download(arg){
     let ed = new ED_Instance(arg.edinstance.raw_data, arg.edinstance.username, arg.edinstance.password)
-    let tmpf = data.get("fichiers")
-    if(tmpf.length > 0){
-        for (let doc of tmpf){
-            ed.downloadHomeworkFile(doc, (result)=>{
-                if (result === 200){
-                    available_files.push(doc)
-                }
-            })
-        }
-    }
+    await getPlanning(ed)
 
     while(run){
+        let tmpf = data.get("fichiers")
+        if(tmpf.length > 0){
+            for (let doc of tmpf){
+                ed.downloadHomeworkFile(doc, (result)=>{
+                    if (result === 200){
+                        available_files.push(doc)
+                    }
+                })
+            }
+        }
+
         let havtostop = false
         if(data.get("last_update") + 60*60*6<= Math.round(new Date().getTime()/1000)){
             let today = new Date()
             today = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 4*7)
             let rentree_year = today.getMonth() + 1 < 9 ? today.getFullYear() - 1 : today.getFullYear() 
             let day = data.get("lastday")
-            if (day + 7 > 8){
-                day -= 7
+            console.log(day)
+            if (day + 7 > 7*6+1){
+                day -= 7 * 6
             }
             let school_ren = new Date(rentree_year, 8, day)
             // console.log(school_ren)
             while(run && (today.getDate() !== school_ren.getDate() || today.getMonth() !== school_ren.getMonth() || today.getFullYear() !== school_ren.getFullYear()) ){
                 school_ren = new Date(rentree_year, 8, day)
 
-                // console.log("run")
+                console.log(school_ren)
                 if (school_ren.getDay() === 0 || school_ren.getDate() === 6){
                     day += 1
                     continue
@@ -219,7 +311,7 @@ async function download(arg){
             }
             data.set("lastday", day)
         }
-        await sleep(1000*60*30)
+        await sleep(1000*60*2)
     }
 }
 
@@ -252,4 +344,8 @@ ipcrend.on("get-homeworks", (event, args)=>{
         dat = data.get("devoirs")
     }
     ipcrend.send("take-homeworks", dat)
+})
+
+ipcrend.on("get-matieres", (event, args)=>{
+    ipcrend.send("take-matieres", planning_data.get("matieres"))
 })
