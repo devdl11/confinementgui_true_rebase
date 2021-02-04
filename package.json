@@ -44,7 +44,7 @@
     "build:electron": "mkdir ./build/src && robocopy electron build/electron /S",
     "react-build": "set GENERATE_SOURCEMAP=false && react-scripts build",
     "package": "electron-builder build --win -c.extraMetadata.main=build/main.js --publish never",
-    "clear-build": "rm -r -force build | rm -r -force dist"
+    "clear-build": "rm -r -f ./build ; rm -r -f ./dist"
   },
   "eslintConfig": {
     "extends": [
