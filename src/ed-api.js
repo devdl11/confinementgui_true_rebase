@@ -118,7 +118,7 @@ class ED_Instance{
         month = month < 10 ? "0" + month.toString() : month.toString()
         let year = date.getFullYear()
         let str_date = String(year) + "-" + String(month) + "-" + String(day)
-        console.log(API_URL + ED_URL.homework.url.replace(":eleveid:", this.user_data["id"]).replace(":date:", str_date))
+        // console.log(API_URL + ED_URL.homework.url.replace(":eleveid:", this.user_data["id"]).replace(":date:", str_date))
         // console.log("data={\"token\":\"" + this.token+"\"}")
         await urllib.request(API_URL + ED_URL.homework.url.replace(":eleveid:", this.user_data["id"]).replace(":date:", str_date),{
             method: ED_URL.homework.method,

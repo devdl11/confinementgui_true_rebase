@@ -14,8 +14,10 @@ class Planning extends React.Component{
         this.list_m = ""
         this.state = {
             matieres: [],
-            current_cours: null
+            current_cours: "Aucun"
         }
+
+        this.saveData = this.saveData.bind(this)
     }
 
     componentDidMount(){
@@ -27,19 +29,40 @@ class Planning extends React.Component{
                 
                 this.matieres = args
                 this.list_m = this.matieres.map((key)=>{
-                    return <MatiereBarre key={key.nom + key.prof} ref={(rf)=>this.mat_ref[key.nom + key.prof] = rf} matiere={key.nom} url={key.url} prof={key.prof} rappel={key.rappel} />
+                    return <MatiereBarre key={key.nom + key.prof} ref={(rf)=>this.mat_ref[key.nom + key.prof] = rf} matiere={key.nom} url={key.url} prof={key.prof} rappel={key.rappel} callback={this.saveData}/>
                 })
-                console.log(this.list_m)
             }
             this.setState({
-                files: args
+                matieres: args
             })
         })
+        ipcRenderer.on("take-currentcours", (event, args)=>{
+            
+            this.setState({
+                current_cours: args === ""? "Aucun" : args
+            })
+            
+        })
+        ipcRenderer.send("get-currentcours", {})
         ipcRenderer.send("get-matieres", {})
     }
 
     componentWillUnmount(){
         ipcRenderer.removeAllListeners("take-matieres")
+        ipcRenderer.removeAllListeners("take-currentcours")
+    }
+
+    saveData(){
+        let pack = {}
+        for(let key of Object.keys(this.mat_ref)){
+            pack[key] = {
+                nom: this.mat_ref[key].getMatiere(),
+                prof: this.mat_ref[key].getProf(),
+                rappel: this.mat_ref[key].getReminderState(),
+                url: this.mat_ref[key].getCoursUrl()
+            }
+        }
+        ipcRenderer.send("update-cours", pack)
     }
 
     render(){
@@ -47,7 +70,7 @@ class Planning extends React.Component{
             <div className="Planning">
                 <div className="Nav">
                     <div className="Title">Planning</div>
-                    <div className="SubTitle">Cours en moment: </div><div className="CoursName">{this.state.current_cours}</div>
+                    <div className="SubTitle">Cours en ce moment: </div><div className="CoursName">{this.state.current_cours}</div>
                 </div>
                 <div className="content">
                     {this.list_m}

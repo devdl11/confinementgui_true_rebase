@@ -20,13 +20,18 @@ function createWindow () {
 
   //load the index.html from a url
   // mainwin.loadURL('http://localhost:3000');
-  const startUrl = process.env.ELECTRON_START_URL || url.format({
-    pathname: path.join(__dirname, '../index.html'),
+  
+  const startUrl = process.env.ELECTRON_START_URL.length > 0 ?  process.env.ELECTRON_START_URL : url.format({
+    pathname: path.join(__dirname, '../build/index.html'),
     protocol: 'file:',
     slashes: true,
   });
-  mainwin.loadFile(startUrl);
-
+  if(startUrl === process.env.ELECTRON_START_URL){
+    mainwin.loadURL(startUrl)
+  }else{
+    mainwin.loadFile(startUrl)
+  }
+  // app.setAppUserModelId(app.name)
   worker = new BrowserWindow({
     show:false,
     webPreferences:{
@@ -34,11 +39,14 @@ function createWindow () {
       enableRemoteModule: true
     }
   })
-  worker.loadFile("./public/worker.html")
+  const url2 = startUrl === process.env.ELECTRON_START_URL? path.join(__dirname, 'worker.html') : path.join(__dirname, '../build/worker.html')
+  // worker.loadFile("./public/worker.html")
+  worker.loadFile(url2)
   worker.webContents.openDevTools()
   mainwin.on("closed", ()=>{
     worker.close()
   })
+  
   // Open the DevTools.
 //   win.webContents.openDevTools()
 }
@@ -76,6 +84,23 @@ ipcMain.on("get-matieres", (event, args)=>{
   }
 })
 
+
+ipcMain.on("get-currentcours", (event, args)=>{
+  if(typeof worker === 'undefined'){
+    console.error("worker not available")
+  }else{
+    worker.webContents.send("get-currentcours", args)
+  }
+})
+
+ipcMain.on("update-cours", (event, args)=>{
+  if(typeof worker === 'undefined'){
+    console.error("worker not available")
+  }else{
+    worker.webContents.send("update-cours", args)
+  }
+})
+
 ipcMain.on("take-edfiles", (event,args)=>{
   if(typeof mainwin === 'undefined'){
     console.error("main not available")
@@ -100,6 +125,14 @@ ipcMain.on("take-matieres", (event,args)=>{
   }
 })
 
+ipcMain.on("take-currentcours", (event,args)=>{
+  if(typeof mainwin === 'undefined'){
+    console.error("main not available")
+  }else{
+    mainwin.webContents.send("take-currentcours", args)
+  }
+})
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -114,6 +147,8 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+// app.setAppUserModelId()
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
