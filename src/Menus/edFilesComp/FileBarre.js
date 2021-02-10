@@ -1,7 +1,7 @@
 import React from 'react';
-const electron = require('electron');
+const electron = window.require('electron');
 const filemanager = require("fs");
-const shell = require('electron').shell;
+const shell = window.require('electron').shell;
 const remote = electron.remote
 const {ipcRenderer} = electron
 

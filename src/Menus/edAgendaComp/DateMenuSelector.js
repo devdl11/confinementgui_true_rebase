@@ -1,5 +1,5 @@
 import React from 'react';
-const electron = require('electron');
+const electron = window.require('electron');
 const remote = electron.remote
 const {ipcRenderer} = electron
 

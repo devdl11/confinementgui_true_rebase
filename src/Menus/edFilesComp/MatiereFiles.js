@@ -1,8 +1,5 @@
 import React from 'react';
 import DateContainerFiles from "./DateContainerFiles"
-const electron = require('electron');
-const remote = electron.remote
-const {ipcRenderer} = electron
 
 class MatiereFiles extends React.Component{
     constructor(props){

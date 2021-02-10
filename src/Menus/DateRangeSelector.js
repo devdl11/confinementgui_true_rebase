@@ -1,8 +1,6 @@
 import React from 'react';
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-const electron = require('electron');
-const remote = electron.remote
 
 class DateRangeSelector extends React.Component{
     constructor(props){

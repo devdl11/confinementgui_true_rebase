@@ -1,8 +1,7 @@
 import React from 'react';
 import DateMenuSelector from "./edAgendaComp/DateMenuSelector"
 import DateMenu from "./edAgendaComp/DateMenu"
-const electron = require('electron');
-const remote = electron.remote
+const electron = window.require('electron');
 const {ipcRenderer} = electron
 
 class EDAgenda extends React.Component{

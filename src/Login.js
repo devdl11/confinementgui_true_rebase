@@ -3,9 +3,7 @@ import './Menu.css';
 import Menu from "./Menu"
 import React from 'react';
 // import {login as edlog} from "./ed-api"
-import {SelfCrypto, AppData} from "./crypto"
-const {login} =  require("./ed-api")
-const electron = require('electron');
+const electron = window.require('electron');
 const remote = electron.remote
 const {dialog} = remote
 
@@ -39,9 +37,9 @@ class Login extends React.Component {
             return
         }
         this.buttonsub.current.disabled = true
-        login(username, password, (result) => {
+        window.api.login(username, password, (result) => {
             this.buttonsub.current.disabled = false
-            if(result === undefined){
+            if(!result){
                 return;
             }
             let res = dialog.showMessageBoxSync({
@@ -53,12 +51,11 @@ class Login extends React.Component {
                 noLink: true
             })
             if(res === 1){
-                let dat = new AppData("00")
-                dat.password = password
-                dat.username = username
-                dat.pearlURL = result.getPearltreesURL()
-                SelfCrypto.data = dat
-                SelfCrypto.saveDate()
+                (async () =>{
+                    let url = await window.api.getPearltreesURL()
+                    window.api.registerLogins(username, password, url)
+                })()
+                
             }
             this.setState({
                 edint: result

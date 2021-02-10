@@ -1,6 +1,6 @@
 import React from 'react';
 import MatiereBarre from "./planningComp/MatiereBarre"
-const electron = require('electron');
+const electron = window.require('electron');
 const remote = electron.remote
 const {ipcRenderer} = electron
 

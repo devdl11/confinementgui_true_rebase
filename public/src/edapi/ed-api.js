@@ -1,7 +1,6 @@
 const filemanager = require("fs")
 const electron = require('electron');
-const remote = electron.remote
-const {dialog} = remote
+const {dialog} = electron
 
 const urllib = require("urllib")
 
@@ -98,7 +97,7 @@ class ED_Instance{
             if(err || data.code === 525){
                 login(this.username, this.password, (result)=>{
                     if(typeof result === undefined){
-                        remote.app.quit()
+                        electron.app.quit()
                     }else{
                         this.user_data = result.user_data
                         this.token = result.token
@@ -132,7 +131,7 @@ class ED_Instance{
             if(err || data.code === 525){
                 login(this.username, this.password, (result)=>{
                     if(typeof result === undefined){
-                        remote.app.quit()
+                        electron.app.quit()
                     }else{
                         this.user_data = result.user_data
                         this.token = result.token
@@ -171,4 +170,5 @@ async function login(username, password, callback){
     })
 }
 
-module.exports = {ED_Instance, login}
+module.exports.ED_Instance = ED_Instance
+module.exports.login = login

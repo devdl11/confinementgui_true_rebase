@@ -1,9 +1,7 @@
 const crypt = require("crypto-js")
 const filemanager = require("fs")
 const sysinfo = require("systeminformation")
-
-const electron = require('electron');
-const remote = electron.remote
+const { app_directory } = require("./storage/static_vars")
 
 class AppData {
     constructor(raw) {
@@ -77,7 +75,7 @@ class AppData {
 
 class SelfCrypto {
     static getDirectoryData() {
-        return (electron.app || electron.remote.app).getPath("userData")
+        return app_directory
         // return (remote.process.env.APPDATA || (remote.process.platform === 'darwin' ? remote.process.env.HOME + '/Library/Preferences' : remote.process.env.HOME + "/.local/share")) + "/ConfinementGUI"
     }
 
@@ -139,4 +137,5 @@ class SelfCrypto {
 }
 }
 
-export { SelfCrypto, AppData };
+module.exports.SelfCrypto = SelfCrypto
+module.exports.AppData = AppData

@@ -8,11 +8,8 @@ import EDAgenda from "./Menus/EDAgenda"
 import Planning from "./Menus/Planning"
 import React from 'react';
 import BarreNav from "./composants Menu/BarreNav"
-const electron = require('electron');
+const electron = window.require('electron');
 const ipcRender = electron.ipcRenderer
-const remote = electron.remote
-
-const {dialog} = remote
 
 class Menu extends React.Component{
     constructor(props){
@@ -26,7 +23,7 @@ class Menu extends React.Component{
         this.state = {
             menu: null
         }
-        console.log(this.ed_inst)
+        // console.log(this.ed_inst)
         ipcRender.send("run-remote-download", {
             edinstance: this.ed_inst
         })

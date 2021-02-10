@@ -1,8 +1,6 @@
 import React from 'react';
 import "./BarreNav.css"
 import MenuButton from "./MenuButton"
-const electron = require('electron');
-const remote = electron.remote
 
 class BarreNav extends React.Component{
     constructor(props){

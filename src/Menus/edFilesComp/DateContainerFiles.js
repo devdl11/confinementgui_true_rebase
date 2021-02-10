@@ -1,6 +1,6 @@
 import React from 'react';
 import FileBarre from "./FileBarre"
-const electron = require('electron');
+const electron = window.require('electron');
 const remote = electron.remote
 const {ipcRenderer} = electron
 

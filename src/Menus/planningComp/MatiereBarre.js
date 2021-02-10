@@ -1,6 +1,6 @@
 import React from 'react';
 import Switch from "@material-ui/core/Switch"
-const electron = require('electron');
+const electron = window.require('electron');
 const shell = electron.shell
 
 class MatiereBarre extends React.Component{

@@ -1,6 +1,4 @@
 import React from 'react';
-const electron = require('electron');
-const remote = electron.remote
 
 class MenuButton extends React.Component{
     constructor(props){

@@ -5,6 +5,7 @@
   },
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "main": "public/main.js",
   "dependencies": {
     "@craco/craco": "^6.0.0",
@@ -22,6 +23,8 @@
     "esm": "^3.2.25",
     "node-notifier": "^9.0.0",
     "postcss": "^7.0.35",
+    "postcss-cli": "^8.3.1",
+    "postcss-import": "^14.0.0",
     "react": "^17.0.1",
     "react-datepicker": "^3.4.1",
     "react-dom": "^17.0.1",
@@ -32,19 +35,26 @@
     "wait-on": "^5.2.1",
     "web-vitals": "^0.2.4"
   },
-  "build":{
+  "build": {
     "appId": "com.dl11.confinementGUI"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "prepare":"cp ./src/Storage.js ./public/ && cp ./src/ed-api.js ./public/",
     "test": "craco test",
     "eject": "craco eject",
     "electron-dev": "set ELECTRON_START_URL=http://localhost:3000 && electron .",
     "build:electron": "mkdir ./build/src && robocopy electron build/electron /S",
-    "react-build": "set GENERATE_SOURCEMAP=false && react-scripts build",
+    "react-build": "set GENERATE_SOURCEMAP=false && craco build",
     "package": "electron-builder build --win -c.extraMetadata.main=build/main.js --publish never",
-    "clear-build": "rm -r -f ./build ; rm -r -f ./dist"
+    "clear-build": "rm -r -f ./build ; rm -r -f ./dist",
+    "react-start": "react-scripts start",
+    "craco-start": "craco start",
+    "react-test": "react-scripts test",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "build": "npm run react-build && npm run electron-build",
+    "build:tailwindcss": "tailwind build src/tailwindcss.source.css -o src/tailwind.output.css",
+    "start": "set ELECTRON_START_URL=http://localhost:3000 && concurrently \"cross-env BROWSER=none npm run craco-start\" \"wait-on http://localhost:3000 && electron .\" "
   },
   "eslintConfig": {
     "extends": [

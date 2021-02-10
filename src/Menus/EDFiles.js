@@ -1,9 +1,7 @@
 import React from 'react';
 import DataRangeSelector from "./DateRangeSelector"
-import Storage from "../Storage"
 import MatiereFiles from "./edFilesComp/MatiereFiles"
-const electron = require('electron');
-const remote = electron.remote
+const electron = window.require('electron');
 const {ipcRenderer} = electron
 
 class EDFiles extends React.Component{

@@ -1,11 +1,8 @@
-const electron = require("electron");
-const { get } = require("systeminformation");
-const Storage = require("../src/Storage");
-const {ED_Instance} = window.require("../src/ed-api")
-const shell = require("electron").shell
-const crypto = require("crypto-js")
-const ipcrend = electron.ipcRenderer
-const {dialog} = electron.remote
+const shell = window.internal.shell()
+const ipcrend = window.internal.ipcrend()
+
+
+let myED = window.internal.isolated_ed_api()
 
 function sleep(ms) {
     return new Promise((resolve) => {
@@ -18,33 +15,51 @@ let available_files = []
 let current_cours = ""
 let lastWarned = ""
 
-let data = new Storage({
-    configName: "ed_data",
-    defaults:{
+let data = window.api.open_storage("ed_data",{
         fichiers:[],
         devoirs:{},
         last_update:0,
         lastday: 1
-    }
-})
+    })
 
-let planning_data = new Storage({
-    configName: "planning",
-    defaults:{
+let planning_data = window.api.open_storage("planning",{
         days: {},
         matieres: []
     }
-})
+)
 
-let edt_data = new Storage({
-    configName: "edt",
-    defaults:{
+let edt_data = window.api.open_storage("edt",{
         matieres: []
     }
-})
+)
+// let data = new Storage({
+//     configName: "ed_data",
+//     defaults:{
+//         fichiers:[],
+//         devoirs:{},
+//         last_update:0,
+//         lastday: 1
+//     }
+// })
 
-async function getPlanning(ed){
-    let tmpmat = planning_data.get("matieres")
+// let planning_data = new Storage({
+//     configName: "planning",
+//     defaults:{
+//         days: {},
+//         matieres: []
+//     }
+// })
+
+// let edt_data = new Storage({
+//     configName: "edt",
+//     defaults:{
+//         matieres: []
+//     }
+// })
+
+async function getPlanning(){
+    const ed = myED
+    let tmpmat = window.api.storage_get(planning_data, "matieres")
     if(typeof tmpmat === "undefined"){
         tmpmat = []
     }
@@ -53,13 +68,17 @@ async function getPlanning(ed){
     let matnames_pushed = []
     let currentMat = {}
     for(let mat of tmpmat){
+        console.log(mat)
         matnames.push(mat["nom"] + mat["prof"])
         currentMat[mat["nom"] + mat["prof"]] = mat
     }
+    console.log(tmpmat)
+    console.log(matnames)
+    console.log(currentMat)
 
     await ed.getEDT((data)=>{
         // console.log(data)
-        edt_data.set("matieres", data)
+        window.api.storage_set(edt_data, "matieres", data)
         let matieres = {}
         for(let mati of data){
             let date = mati["start_date"].split(" ")[0]
@@ -84,7 +103,7 @@ async function getPlanning(ed){
                     rappel:true
                 }
                 if(!matnames_pushed.includes(matiere.nom + matiere.prof)){
-                    if(!matnames.includes(matiere.nom)){
+                    if(!matnames.includes(matiere.nom + matiere.prof)){
                         finalMatiere.push({
                             nom: matiere.nom,
                             prof: matiere.prof,
@@ -92,7 +111,7 @@ async function getPlanning(ed){
                             rappel: true
                         })
                     }else{
-                        finalMatiere.push(currentMat[matiere.nom])
+                        finalMatiere.push(currentMat[matiere.nom+matiere.prof])
                     }
                     matnames_pushed.push(matiere.nom + matiere.prof)
                 }
@@ -111,16 +130,16 @@ async function getPlanning(ed){
         // let ids = finalMatiere.map(o => o.id)
         // finalMatiere = finalMatiere.filter(({id}, index) => !ids.includes(id, index + 1))
 
-        planning_data.set("days", finalData)
-        planning_data.set("matieres", finalMatiere)
+        window.api.storage_set(planning_data, "days", finalData)
+        window.api.storage_set(planning_data, "matieres", finalMatiere)
     })
     
 }
 
 async function internPlanningManager(){
     let today = new Date()
-    let planningDays = planning_data.get("days")
-    let matieres = planning_data.get("matieres")
+    let planningDays = window.api.storage_get(planning_data, "days")
+    let matieres = window.api.storage_get(planning_data, "matieres")
 
     let allAvailableDays = Object.keys(planningDays)
     if(!allAvailableDays.includes(String(today.getDay()))){
@@ -148,7 +167,7 @@ async function internPlanningManager(){
                 ipcrend.send("take-currentcours", current_cours)
             }
         }
-        if(dbtTime - 40 <= current_time && current_time <= dbtTime + 40 && lastWarned !== mat["nom"]){
+        if(dbtTime - 120 <= current_time && current_time <= dbtTime + 40 && lastWarned !== mat["nom"]){
             console.log("Alert?")
             lastWarned = mat["nom"]
             console.log(lastWarned)
@@ -179,12 +198,13 @@ async function internPlanningManager(){
 
 
 async function download(arg){
-    let ed = new ED_Instance(arg.edinstance.raw_data, arg.edinstance.username, arg.edinstance.password)
+    const ed = myED
     await getPlanning(ed)
 
     while(run){
         internPlanningManager()
-        let tmpf = data.get("fichiers")
+        
+        let tmpf = window.api.storage_get(data, "fichiers")
         if(tmpf.length > 0){
             for (let doc of tmpf){
                 ed.downloadHomeworkFile(doc, (result)=>{
@@ -196,11 +216,11 @@ async function download(arg){
         }
 
         let havtostop = false
-        if(data.get("last_update") + 60*60*6<= Math.round(new Date().getTime()/1000)){
+        if(window.api.storage_get(data, "last_update") + 60*60*6<= Math.round(new Date().getTime()/1000)){
             let today = new Date()
             today = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 4*7)
             let rentree_year = today.getMonth() + 1 < 9 ? today.getFullYear() - 1 : today.getFullYear() 
-            let day = data.get("lastday")
+            let day = window.api.storage_get(data, "lastday")
             if (day + 7 > 7*6+1){
                 day -= 7 * 6
             }
@@ -225,8 +245,8 @@ async function download(arg){
                     let str_date = year + "-" + month + "-" + day
                     
                     let oldData = {}
-                    if(typeof data.get("devoirs") !== "undefined"){
-                        oldData = data.get("devoirs")
+                    if(typeof window.api.storage_get(data, "devoirs") !== "undefined"){
+                        oldData = window.api.storage_get(data, "devoirs")
                     }
                     let keys = Object.keys(oldData)
                     if(!keys.includes(str_date)){
@@ -311,15 +331,15 @@ async function download(arg){
                                 finalData["contenuDS"] = {}
                             }
                             let alldataDate = {}
-                            if(typeof data.get("devoirs") !== "undefined"){
-                                alldataDate = data.get("devoirs")
+                            if(typeof window.api.storage_get(data, "devoirs") !== "undefined"){
+                                alldataDate = window.api.storage_get(data, "devoirs")
                             }
                             let keys = Object.keys(alldataDate)
                             if(!keys.includes(str_date)){
                                 alldataDate[str_date] = {}
                             }
                             alldataDate[str_date][mat["matiere"]] = finalData
-                            data.set("devoirs", alldataDate)
+                            window.api.storage_set(data, "devoirs", alldataDate)
                             let allfiles = finalData["documents"]
                             if(Object.keys(finalData["contenuDS"]).length > 0 && finalData["contenuDS"]["documents"].length > 0){
                                 for(let file of finalData["contenuDS"]["documents"]){
@@ -329,14 +349,14 @@ async function download(arg){
                             let ids = allfiles.map(o => o.id)
                             allfiles = allfiles.filter(({id}, index) => !ids.includes(id, index + 1))
 
-                            let allDocuments = data.get("fichiers")
+                            let allDocuments = window.api.storage_get(data, "fichiers")
                             if(typeof allDocuments === "undefined"){
                                 allDocuments = []
                             }
                             allDocuments = [...allDocuments, ...allfiles]
                             ids = allDocuments.map(o => o.id)
                             allDocuments = allDocuments.filter(({id}, index) => !ids.includes(id, index + 1))
-                            data.set("fichiers", allDocuments)
+                            window.api.storage_set(data, "fichiers", allDocuments)
 
                             for(let doc of allfiles){
                                 ed.downloadHomeworkFile(doc, (result)=>{
@@ -351,8 +371,8 @@ async function download(arg){
                         }
                     
                         let alldataDate = {}
-                        if(typeof data.get("devoirs") !== "undefined"){
-                            alldataDate = data.get("devoirs")
+                        if(typeof window.api.storage_get(data, "devoirs") !== "undefined"){
+                            alldataDate = window.api.storage_get(data, "devoirs")
                         }
                         let keys = Object.keys(alldataDate)
                         if(!keys.includes(str_date)){
@@ -371,7 +391,7 @@ async function download(arg){
                     break
                 }
             }
-            data.set("lastday", day)
+            window.api.storage_set(data, "lastday", day)
         }
         await sleep(1000*60*2)
     }
@@ -402,14 +422,14 @@ ipcrend.on("get-edfiles", (event, args)=>{
 
 ipcrend.on("get-homeworks", (event, args)=>{
     let dat = {}
-    if(typeof data.get("devoirs") !== "undefined"){
-        dat = data.get("devoirs")
+    if(typeof window.api.storage_get(data, "devoirs") !== "undefined"){
+        dat = window.api.storage_get(data, "devoirs")
     }
     ipcrend.send("take-homeworks", dat)
 })
 
 ipcrend.on("get-matieres", (event, args)=>{
-    ipcrend.send("take-matieres", planning_data.get("matieres"))
+    ipcrend.send("take-matieres", window.api.storage_get(planning_data, "matieres"))
 })
 
 ipcrend.on("get-currentcours", (event, args)=>{
@@ -417,7 +437,7 @@ ipcrend.on("get-currentcours", (event, args)=>{
 })
 
 ipcrend.on("update-cours", (event, args)=>{
-    let allmat = planning_data.get("matieres")
+    let allmat = window.api.storage_get(planning_data, "matieres")
     let final = []
     for(let mat of allmat){
         let recv = args[mat["nom"] + mat["prof"]]
@@ -428,5 +448,6 @@ ipcrend.on("update-cours", (event, args)=>{
             final.push(mat)
         }
     }
-    planning_data.set("matieres", final)
+    
+    window.api.storage_set(planning_data, "matieres", final)
 })

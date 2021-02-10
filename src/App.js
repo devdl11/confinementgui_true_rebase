@@ -1,15 +1,11 @@
 import './App.css';
 import './Login.css';
 import './Menu.css';
+import './tailwind.output.css';
 import React from 'react'
 import Menu from "./Menu"
 import Loading from "./Loading"
-import * as cryp from './crypto';
 import Login from "./Login"
-const {login} =  require("./ed-api")
-const electron = window.require('electron');
-const remote = electron.remote
-const { BrowserWindow } = remote
 
 class App extends React.Component {
   constructor(props){
@@ -21,24 +17,32 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-    cryp.SelfCrypto.__init__(()=>{
-      if(cryp.SelfCrypto.data === undefined){
+    (async ()=>{
+      let menut = await window.api.getStartMenuType()
+      if (!menut){
         this.menush = <Login/>
         this.setState({
           loaded:true
         })
       }else{
-        login(cryp.SelfCrypto.data.username, cryp.SelfCrypto.data.password, (result)=>{
-          if(result === undefined){
+        window.api.runAutoLogin((result)=>{
+          if(!result){
             this.menush = <Login/>
+            this.setState({
+              loaded:true
+            })
+          }else{
+            (async () =>{
+              let dt = await window.api.getEDData()
+              this.menush = <Menu ed_inst={dt}/>
+              this.setState({
+              loaded:true
+            })
+            })()
           }
-          this.menush = <Menu ed_inst={result}/>
-          this.setState({
-            loaded:true
-          })
         })
       }
-    })
+    })()
   }
 
   render(){

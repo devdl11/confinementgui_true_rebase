@@ -1,7 +1,6 @@
 import React from 'react';
-import { prototype } from '../../Storage';
 import MatiereHomework from "./MatiereHomework"
-const electron = require('electron');
+const electron = window.require('electron');
 const remote = electron.remote
 const {ipcRenderer} = electron
 
