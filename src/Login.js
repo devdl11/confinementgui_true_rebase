@@ -2,10 +2,6 @@ import './App.css';
 import './Menu.css';
 import Menu from "./Menu"
 import React from 'react';
-// import {login as edlog} from "./ed-api"
-const electron = window.require('electron');
-const remote = electron.remote
-const {dialog} = remote
 
 class Login extends React.Component {
     constructor(props){
@@ -19,6 +15,19 @@ class Login extends React.Component {
         }
         //defined bind
         this.EDlogin = this.EDlogin.bind(this)
+        this.EDlogin_next = this.EDlogin_next.bind(this)
+    }
+
+    async EDlogin_next(username, password){
+        let result = await window.api.login(username, password)
+        this.buttonsub.current.disabled = false
+        if(!result){
+            return;
+        }
+        window.api.save_login_dialog(username, password)
+        this.setState({
+            edint: await window.api.getEDData()
+        })
     }
 
     EDlogin(el){
@@ -26,42 +35,11 @@ class Login extends React.Component {
         let username = String(this.username_in.current.value)
         let password = String(this.password_in.current.value)
         if(username.length < 2 || password.length < 2){
-            dialog.showMessageBoxSync({
-                type:"warning",
-                buttons:["Ok"],
-                defaultId:0,
-                title:"Erreur",
-                message:"Veuillez entrer des identifiants valides!",
-                noLink:true
-            })
+            window.api.error_login_dialog()
             return
         }
         this.buttonsub.current.disabled = true
-        window.api.login(username, password, (result) => {
-            this.buttonsub.current.disabled = false
-            if(!result){
-                return;
-            }
-            let res = dialog.showMessageBoxSync({
-                type: "question",
-                buttons: ["Non", "Oui"],
-                titre: "Identifiants",
-                message:"Souhaitez-vous enregistrer vos identifiants et bénéficier de la connexion automatique?",
-                defaultId: 1,
-                noLink: true
-            })
-            if(res === 1){
-                (async () =>{
-                    let url = await window.api.getPearltreesURL()
-                    window.api.registerLogins(username, password, url)
-                })()
-                
-            }
-            this.setState({
-                edint: result
-            })
-        })
-        
+        this.EDlogin_next(username, password)
     }
 
     render() {

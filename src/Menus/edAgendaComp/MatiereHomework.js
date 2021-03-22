@@ -1,9 +1,4 @@
 import React from 'react';
-const electron = window.require('electron');
-const filemanager = require("fs");
-const shell = window.require('electron').shell;
-const remote = electron.remote
-const {dialog} = remote
 
 class MatiereHomework extends React.Component{
     constructor(props){
@@ -27,20 +22,15 @@ class MatiereHomework extends React.Component{
             if(name.length > 32){
                 name = name.substr(0, 29) + "." + ext
             }
-            return <div key={name} className="filename" onClick={() => this.openFile(file["nom"])}>{name}</div>
+            return <div key={file["nom"]} className="filename" onClick={() => this.openFile(file["nom"])}>{name}</div>
         })
 
         this.openFile = this.openFile.bind(this)
     }
 
     openFile(name){
-        let directoryData = (electron.app || electron.remote.app).getPath("userData") + "/EDFiles"
-        let file_path = directoryData + "/" + encodeURI(name)
-        if(filemanager.existsSync(file_path)){
-            shell.openPath(file_path)
-        }else{
-            dialog.showErrorBox("Erreur","Fichier indisponible!")
-        }
+        let file_path = "EDFiles/" + encodeURI(name)
+        window.api.open_file(file_path)
     }
 
     render(){

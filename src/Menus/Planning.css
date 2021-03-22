@@ -24,6 +24,10 @@
     @apply text-lg inline relative;
 }
 
+.Planning > .content > .NoMatieres{
+    @apply relative text-center text-xl text-red-600;
+}
+
 .Planning > .content > .MatiereBarre{
     margin: 0.5% 1%;
     padding-bottom: 0.25%;

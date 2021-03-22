@@ -13,6 +13,10 @@ class virtual_file{
         return fs.readFileSync(this.file_path)
     }
 
+    exist(){
+        return fs.existsSync(this.file_path)
+    }
+
     get path(){
         return this.file_path
     }

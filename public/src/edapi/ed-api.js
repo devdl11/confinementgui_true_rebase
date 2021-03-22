@@ -1,6 +1,7 @@
 const filemanager = require("fs")
 const electron = require('electron');
 const {dialog} = electron
+const {app_directory} = require("../storage/static_vars")
 
 const urllib = require("urllib")
 
@@ -43,7 +44,7 @@ class ED_Instance{
     }
 
     async downloadHomeworkFile(filedata, callback){
-        let directoryData = (electron.app || electron.remote.app).getPath("userData") + "/EDFiles"
+        let directoryData = app_directory + "/EDFiles"
         // console.log("Requested!")
         if(!filemanager.existsSync(directoryData)){
             filemanager.mkdirSync(directoryData)
@@ -71,6 +72,7 @@ class ED_Instance{
 
     async getEDT(callback){
         let today = new Date()
+        today = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14)
         let diff = today.getDay() - 1
         if(diff < 0){
             diff = 6
@@ -160,7 +162,7 @@ async function login(username, password, callback){
                 buttons:["Ok"],
                 defaultId:0,
                 title:"Erreur",
-                message:data.message,
+                message:data !== undefined ? data.message || "Une erreur est survenue lors de la connexion!" : "Une erreur est survenue!",
                 noLink:true
             })
             callback(undefined)

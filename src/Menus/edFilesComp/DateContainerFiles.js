@@ -1,8 +1,5 @@
 import React from 'react';
 import FileBarre from "./FileBarre"
-const electron = window.require('electron');
-const remote = electron.remote
-const {ipcRenderer} = electron
 
 class DateContainerFiles extends React.Component{
     constructor (props){
@@ -36,10 +33,23 @@ class DateContainerFiles extends React.Component{
         month[11] = "Décembre"
 
         this.str_date = weekday[dat.getDay()] + " " + splitted[2] + " " + month[dat.getMonth()]
+        let flist = []
+
+        let tmp = []
+        for (let i of this.files){
+            if(!tmp.includes(i)){
+                tmp.push(i)
+            }
+        }
+
+        tmp.map((file)=>{
+            flist.push(<FileBarre name={file["nom"]} backm={props.backmenu} key={file["nom"]+ String(file["id"])}/>)
+            return null
+        })
 
         this.state = {
-            fileList: this.files.map((file)=>{
-                return <FileBarre name={file["nom"]} key={file["nom"]}/>
+            fileList: flist.map((val)=>{
+                return val
             })
         }
     }

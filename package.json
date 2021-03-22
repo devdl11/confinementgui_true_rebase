@@ -8,7 +8,7 @@
   "homepage": "./",
   "main": "public/main.js",
   "dependencies": {
-    "@craco/craco": "^6.0.0",
+    "@craco/craco": "^6.1.1",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@tailwindcss/postcss7-compat": "^2.0.2",
@@ -21,15 +21,13 @@
     "crypto-js": "^4.0.0",
     "electron-is-dev": "^1.2.0",
     "esm": "^3.2.25",
+    "firebase": "^8.2.9",
     "node-notifier": "^9.0.0",
-    "postcss": "^7.0.35",
-    "postcss-cli": "^8.3.1",
-    "postcss-import": "^14.0.0",
     "react": "^17.0.1",
     "react-datepicker": "^3.4.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
-    "systeminformation": "^4.34.7",
+    "systeminformation": "^5.6.2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "urllib": "^2.36.1",
     "wait-on": "^5.2.1",
@@ -39,7 +37,6 @@
     "appId": "com.dl11.confinementGUI"
   },
   "scripts": {
-    "prepare":"cp ./src/Storage.js ./public/ && cp ./src/ed-api.js ./public/",
     "test": "craco test",
     "eject": "craco eject",
     "electron-dev": "set ELECTRON_START_URL=http://localhost:3000 && electron .",
@@ -75,10 +72,9 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.13",
-    "@babel/core": "^7.12.13",
-    "electron": "^11.2.2",
+    "electron": "^11.2.3",
     "electron-builder": "^22.9.1",
+    "imports-loader": "^2.0.0",
     "stylelint-config-recommended": "^3.0.0"
   }
 }

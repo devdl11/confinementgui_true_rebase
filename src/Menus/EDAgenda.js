@@ -1,8 +1,6 @@
 import React from 'react';
 import DateMenuSelector from "./edAgendaComp/DateMenuSelector"
 import DateMenu from "./edAgendaComp/DateMenu"
-const electron = window.require('electron');
-const {ipcRenderer} = electron
 
 class EDAgenda extends React.Component{
     constructor(props){
@@ -37,7 +35,7 @@ class EDAgenda extends React.Component{
 
     componentDidMount(){
         
-        ipcRenderer.on("take-homeworks", (event, args)=>{
+        window.ipcrend.on("take-homeworks", (event, args)=>{
             if(args.length === 0){
                 this.list_h = <div className="NoHomeworks">Aucun devoir</div>
             }else{
@@ -71,11 +69,11 @@ class EDAgenda extends React.Component{
                 homeworks: args
             })
         })
-        ipcRenderer.send("get-homeworks", {})
+        window.ipcrend.send("get-homeworks", {})
     }
 
     componentWillUnmount(){
-        ipcRenderer.removeAllListeners("take-homeworks")
+        window.ipcrend.removeAllListeners("take-homeworks")
     }
 
     render(){

@@ -1,10 +1,8 @@
-const { ipcRenderer} = require('electron')
-
 class Storage {
     constructor(opts) {
         this.filename = opts.configName
         this.data = ""
-        this.renderer = opts.renderer
+        this.myapp = opts.app
         this.parseDataFile(opts.defaults);
         }
 
@@ -14,17 +12,17 @@ class Storage {
 
     set(key, val) {
         this.data[key] = val;
-        ipcRenderer.send("write_file", {name: this.filename, content: JSON.stringify(this.data)})
+        this.myapp.write_file({name: this.filename, content: JSON.stringify(this.data)})
     }
 
-    async parseDataFile(defaults) {
-        console.log(this.renderer)
+    parseDataFile(defaults) {
         try {
-            this.data = JSON.parse( await ipcRenderer.invoke("read_file", this.filename));
+            this.data = JSON.parse( this.myapp.read_file(this.filename));
         } catch (error) {
-            ipcRenderer.send("write_file", {name: this.filename, content: JSON.stringify(defaults)});
+            this.myapp.write_file({name: this.filename, content: JSON.stringify(defaults)});
             this.data = defaults;
         }
+        // console.log(this.data)
     }
 }
 

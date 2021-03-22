@@ -83,7 +83,7 @@
     @apply inline-block flex-none;
 }
 
-.FileBarre > .OpenButton:hover{
+.FileBarre > .OpenButton:hover, .DeleteButton:hover{
     @apply bg-yellow-500;
 }
 
@@ -93,6 +93,12 @@
 
 .FileBarre > .OpenButton, .Unavailable {
     margin-right: 1%;
+    right: 0%;
+    @apply inline-block flex-none float-right text-right absolute;
+}
+
+.FileBarre > .DeleteButton {
+    margin-right: 10%;
     right: 0%;
     @apply inline-block flex-none float-right text-right absolute;
 }

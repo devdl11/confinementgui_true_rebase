@@ -5,7 +5,7 @@ class getPearltreesURL{
 
     build(){
         return () => {
-           if(this.ed_inst_get() === null){
+           if(this.ed_inst_get() === null || this.ed_inst_get() === undefined){
                return null
            }else{
                return this.ed_inst_get().getPearltreesURL()

@@ -1,8 +1,5 @@
 import React from 'react';
-import DataRangeSelector from "./DateRangeSelector"
 import MatiereFiles from "./edFilesComp/MatiereFiles"
-const electron = window.require('electron');
-const {ipcRenderer} = electron
 
 class EDFiles extends React.Component{
     constructor(props){
@@ -38,7 +35,7 @@ class EDFiles extends React.Component{
 
     componentDidMount(){
         
-        ipcRenderer.on("take-edfiles", (event, args)=>{
+        window.ipcrend.on("take-edfiles", (event, args)=>{
             if(args.length === 0){
                 this.list_f = <div className="NoFile">Aucun fichier</div>
             }else{
@@ -60,11 +57,11 @@ class EDFiles extends React.Component{
                 files: args
             })
         })
-        ipcRenderer.send("get-edfiles", {})
+        window.ipcrend.send("get-edfiles", {})
     }
 
     componentWillUnmount(){
-        ipcRenderer.removeAllListeners("take-edfiles")
+        window.ipcrend.removeAllListeners("take-edfiles")
     }
 
     render(){

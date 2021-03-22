@@ -1,8 +1,5 @@
 import React from 'react';
 import MatiereHomework from "./MatiereHomework"
-const electron = window.require('electron');
-const remote = electron.remote
-const {ipcRenderer} = electron
 
 class DateMenu extends React.Component{
     constructor(props){

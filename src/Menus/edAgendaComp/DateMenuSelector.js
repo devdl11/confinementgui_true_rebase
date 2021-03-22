@@ -1,7 +1,5 @@
 import React from 'react';
-const electron = window.require('electron');
-const remote = electron.remote
-const {ipcRenderer} = electron
+
 
 class DateMenuSelector extends React.Component{
     constructor(props){

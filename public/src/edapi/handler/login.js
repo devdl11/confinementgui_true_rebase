@@ -6,14 +6,16 @@ class login_handler{
     }
 
     build(){
-        return async (user, pass, callback) => {
-            await login(user, pass, (data)=>{
-                if(data === undefined){
-                    callback(false)
-                }else{
-                    this.callback(data)
-                    callback(true)
-                }
+        return async (user, pass) => {
+            return new Promise((resolve, reject)=>{
+                login(user, pass, (data)=>{
+                    if(data === undefined){
+                        resolve(false)
+                    }else{
+                        this.callback(data)
+                        resolve(true)
+                    }
+                })
             })
         }
     }

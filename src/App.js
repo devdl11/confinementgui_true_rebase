@@ -8,47 +8,46 @@ import Loading from "./Loading"
 import Login from "./Login"
 
 class App extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       loaded: false
     }
-    this.menush = <Loading/>
+    this.menush = <Loading />
   }
 
-  componentDidMount(){
-    (async ()=>{
+  componentDidMount() {
+    (async () => {
       let menut = await window.api.getStartMenuType()
-      if (!menut){
-        this.menush = <Login/>
+      if (!menut) {
+        this.menush = <Login />
         this.setState({
-          loaded:true
+          loaded: true
         })
-      }else{
-        window.api.runAutoLogin((result)=>{
-          if(!result){
-            this.menush = <Login/>
-            this.setState({
-              loaded:true
-            })
-          }else{
-            (async () =>{
-              let dt = await window.api.getEDData()
-              this.menush = <Menu ed_inst={dt}/>
-              this.setState({
-              loaded:true
-            })
-            })()
-          }
-        })
+      } else {
+        let result = await window.api.runAutoLogin()
+        if (!result) {
+          this.menush = <Login />
+          this.setState({
+            loaded: true
+          })
+        } else {
+          
+          let dt = await window.api.getEDData()
+          this.menush = <Menu ed_inst={dt} />
+          this.setState({
+            loaded: true
+          })
+        }
+
       }
     })()
   }
 
-  render(){
+  render() {
     return this.menush
   }
-  
+
 }
 
 export default App;

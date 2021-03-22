@@ -6,14 +6,16 @@ class runAutoLogin{
     constructor(app){
         this.channel = "runAutoLogin"
         this.module_needed = nonscr
+        this.myapp = app
     }
 
     build(module){
-        return (callback) => {
+        return async () => {
             if(SelfCrypto.data === undefined){
-                callback(false)
+                return false;
             }else{
-                ipcRenderer.send("ed_login", SelfCrypto.data.username, SelfCrypto.data.password, callback)
+                return await this.myapp.ed_events_manager.login_handler.build(null)(SelfCrypto.data.username, SelfCrypto.data.password)
+                // return await ipcRenderer.invoke("ed_login", )
             }
         }
     }

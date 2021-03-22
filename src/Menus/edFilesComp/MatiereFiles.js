@@ -8,8 +8,10 @@ class MatiereFiles extends React.Component{
         this.callbck = props.callback
         this.matiere = props.matiere
         this.dates = {}
+        
         let ids = this.files.map(o => o.id)
         this.files = this.files.filter(({id}, index) => !ids.includes(id, index + 1))
+        
         for (let file of this.files){
             if(!Object.keys(this.dates).includes(file["date"])){
                 this.dates[file["date"]] = []
@@ -27,7 +29,7 @@ class MatiereFiles extends React.Component{
         })
         this.keys = this.keys.reverse()
         this.shower = this.keys.map((date)=>{
-            return <DateContainerFiles files={this.dates[date]} date={date} key={date} />
+            return <DateContainerFiles files={this.dates[date]} date={date} key={date} backmenu={this.callbck}/>
         })
 
     }

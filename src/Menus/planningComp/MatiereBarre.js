@@ -1,7 +1,5 @@
 import React from 'react';
 import Switch from "@material-ui/core/Switch"
-const electron = window.require('electron');
-const shell = electron.shell
 
 class MatiereBarre extends React.Component{
     constructor(props){
@@ -80,8 +78,7 @@ class MatiereBarre extends React.Component{
 
     onClickTitle(){
         if(this.url !== ""){
-            let url = this.url.includes("http") ? this.url : "https://" + this.url
-            shell.openExternal(url)
+            window.api.open_url(this.url)
         }
     }
 

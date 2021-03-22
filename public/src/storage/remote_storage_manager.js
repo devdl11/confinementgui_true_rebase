@@ -6,9 +6,10 @@ function generate_random_id(){
 }
 
 class remote_storage_manager{
-    constructor(){
+    constructor(app){
         this.local_storage = {}
         this.opened_storage = {}
+        this.myapp = app
     }
 
     new_storage(configname, defaults){
@@ -16,7 +17,7 @@ class remote_storage_manager{
             return this.opened_storage[configname]
         }
         let id = generate_random_id()
-        let storage = new Storage({configName: configname, defaults:defaults})
+        let storage = new Storage({configName: configname, defaults:defaults, app:this.myapp})
         this.local_storage[id] = storage
         this.opened_storage[configname] = id
         return id

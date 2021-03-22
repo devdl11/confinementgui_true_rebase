@@ -1,10 +1,11 @@
 
 const { ipcMain } = require("electron")
+const { getEDData } = require("./handler/getEDData")
 const { getPearltreesURL } = require("./handler/getPearltreesURL")
 const { login_handler } = require("./handler/login")
-const { downloadHomeworkFile } = require("./on/downloadHomeworkFile")
-const { getEDT } = require("./on/getEDT")
-const { getHomeWorkByDate } = require("./on/getHomeWorkByDate")
+const { downloadHomeworkFile } = require("./handler/downloadHomeworkFile")
+const { getEDT } = require("./handler/getEDT")
+const { getHomeWorkByDate } = require("./handler/getHomeWorkByDate")
 
 
 class ed_events_manager{
@@ -28,20 +29,20 @@ class ed_events_manager{
         this.getHomeWorkByDate = new getHomeWorkByDate({
             getter: this.ed_instance_get
         })
-        this.getEDData = new getEDT({
+        this.getEDData = new getEDData({
             getter: this.ed_instance_get
         })
     }
 
     initialize(){
         //init handlers
-        ipcMain.handle("ed_login", async (...args) => {return await this.login_handler.build()(...args)})
-        ipcMain.handle("ed_getPearltreesURL", (...args) => {return this.getPearltreesURL.build()(...args)})
-        ipcMain.handle("ed_getData", (...args) => {return this.getEDData.build()(...args)})
+        ipcMain.handle("ed_login", async (event, ...args) => {return await this.login_handler.build()(...args)})
+        ipcMain.handle("ed_getPearltreesURL", (event, ...args) => {return this.getPearltreesURL.build()(...args)})
+        ipcMain.handle("ed_getData", (event, ...args) => {return this.getEDData.build()(...args)})
+        ipcMain.handle("ed_getEDT", async (event, ...args)=>{return await this.getEDT.build()(...args)})
+        ipcMain.handle("ed_getHomeWorkByDate", async (event, ...args)=>{return await this.getHomeWorkByDate.build()(...args)})
+        ipcMain.handle("ed_downloadHomeworkFile", async (event, ...args)=>{return await this.downloadHomeworkFile.build()(...args)})
         //init ons
-        ipcMain.on("ed_downloadHomeworkFile", (...args)=>{this.downloadHomeworkFile.build()(...args)})
-        ipcMain.on("ed_getEDT", (...args)=>{this.getEDT.build()(...args)})
-        ipcMain.on("ed_getHomeWorkByDate", (...args)=>{this.getHomeWorkByDate.build()(...args)})
     }
 }
 

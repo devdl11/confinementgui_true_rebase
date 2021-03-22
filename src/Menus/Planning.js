@@ -1,8 +1,5 @@
 import React from 'react';
 import MatiereBarre from "./planningComp/MatiereBarre"
-const electron = window.require('electron');
-const remote = electron.remote
-const {ipcRenderer} = electron
 
 class Planning extends React.Component{
     constructor(props){
@@ -22,7 +19,7 @@ class Planning extends React.Component{
 
     componentDidMount(){
         
-        ipcRenderer.on("take-matieres", (event, args)=>{
+        window.ipcrend.on("take-matieres", (event, args)=>{
             if(args.length === 0){
                 this.list_m = <div className="NoMatieres">Aucune Matière</div>
             }else{
@@ -36,20 +33,20 @@ class Planning extends React.Component{
                 matieres: args
             })
         })
-        ipcRenderer.on("take-currentcours", (event, args)=>{
+        window.ipcrend.on("take-currentcours", (event, args)=>{
             
             this.setState({
                 current_cours: args === ""? "Aucun" : args
             })
             
         })
-        ipcRenderer.send("get-currentcours", {})
-        ipcRenderer.send("get-matieres", {})
+        window.ipcrend.send("get-currentcours", {})
+        window.ipcrend.send("get-matieres", {})
     }
 
     componentWillUnmount(){
-        ipcRenderer.removeAllListeners("take-matieres")
-        ipcRenderer.removeAllListeners("take-currentcours")
+        window.ipcrend.removeAllListeners("take-matieres")
+        window.ipcrend.removeAllListeners("take-currentcours")
     }
 
     saveData(){
@@ -62,7 +59,7 @@ class Planning extends React.Component{
                 url: this.mat_ref[key].getCoursUrl()
             }
         }
-        ipcRenderer.send("update-cours", pack)
+        window.ipcrend.send("update-cours", pack)
     }
 
     render(){
