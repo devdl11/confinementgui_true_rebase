@@ -157,6 +157,7 @@ async function login(username, password, callback){
         dataType: "json"
     }, (err, data, res)=>{
         if(err|| data.code === 505){
+            console.log(data,"\n",res)
             dialog.showMessageBoxSync({
                 type:"warning",
                 buttons:["Ok"],

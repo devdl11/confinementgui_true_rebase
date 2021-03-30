@@ -28,6 +28,7 @@ class EDAgenda extends React.Component{
     onMenuClick(date, homeworks){
         this.backup = this.list_h
         this.list_h = <DateMenu callback={this.getBackOnclick} date={date} homeworks={homeworks}/>
+        console.log(this.list_h)
         this.setState({
             submenu: date
         })

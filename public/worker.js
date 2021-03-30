@@ -39,31 +39,6 @@ async function initer() {
 
 initer()
 
-// let data = new Storage({
-//     configName: "ed_data",
-//     defaults:{
-//         fichiers:[],
-//         devoirs:{},
-//         last_update:0,
-//         lastday: 1
-//     }
-// })
-
-// let planning_data = new Storage({
-//     configName: "planning",
-//     defaults:{
-//         days: {},
-//         matieres: []
-//     }
-// })
-
-// let edt_data = new Storage({
-//     configName: "edt",
-//     defaults:{
-//         matieres: []
-//     }
-// })
-
 async function getPlanning() {
     const ed = myED
     let tmpmat = await window.api.storage_get(planning_data, "matieres")
@@ -181,10 +156,7 @@ async function internPlanningManager() {
             for (let tmp of matieres) {
                 if (tmp["nom"] === mat["nom"]) {
                     if (tmp["rappel"]) {
-                        console.log("NOTIF!")
                         window.internal.send_cours(mat["nom"], tmp["url"])
-                        // notif.show()
-
                     }
                     break;
                 }
@@ -203,6 +175,7 @@ async function download(arg) {
         internPlanningManager()
 
         let tmpf = await window.api.storage_get(data, "fichiers")
+        console.log(await myED.getFile  ({}))
         if (tmpf.length > 0) {
             for (let doc of tmpf) {
                 let result = await ed.downloadHomeworkFile(doc) 
@@ -221,6 +194,8 @@ async function download(arg) {
             let day = await window.api.storage_get(data, "lastday")
             if (day + 7 > 7 * 6 + 1) {
                 day -= 7 * 6
+            }else if(day > 8){
+                day -= 7
             }
             let school_ren = new Date(rentree_year, 8, day)
             // console.log(school_ren)
@@ -228,13 +203,16 @@ async function download(arg) {
                 
                 school_ren = new Date(rentree_year, 8, day)
 
-                // console.log(school_ren)
-                if (school_ren.getDay() === 0 || school_ren.getDate() === 6) {
+                console.log(school_ren)
+                console.log(school_ren.getDay())
+                if (school_ren.getDay() === 0 || school_ren.getDay() === 6) {
                     day += 1
+                    console.log("-- SKIPPED --")
                     continue
                 }
                 // eslint-disable-next-line no-loop-func
                 let data_recv = await ed.getHomeWorkByDate(school_ren)
+                console.log(data_recv)
                 let tempdate = new Date(data_recv.date)
                 // console.log(tempdate)
                 let day2 = tempdate.getDate()
@@ -340,6 +318,19 @@ async function download(arg) {
                         if (!keys.includes(str_date)) {
                             alldataDate[str_date] = {}
                         }
+
+                        await myED.addHomework({
+                            prof: finalData.prof, 
+                            matiere: mat.matiere,
+                            date: str_date,
+                            iscontrol: finalData.hasEval,
+                            docsraw: JSON.stringify(finalData.documents),
+                            raw: JSON.stringify(finalData),
+                            contenu: finalData.contenuDevoir,
+                            cseance: Object.keys(finalData.contenuDS).length > 0 ? finalData.contenuDS.contenu : "",
+                            docsseance: Object.keys(finalData.contenuDS).length > 0 ? finalData.contenuDS.contenu : JSON.stringify([]),
+                        })
+
                         alldataDate[str_date][mat["matiere"]] = finalData
                         window.api.storage_set(data, "devoirs", alldataDate)
                         let allfiles = finalData["documents"]
@@ -350,6 +341,16 @@ async function download(arg) {
                         }
                         let ids = allfiles.map(o => o.id)
                         allfiles = allfiles.filter(({ id }, index) => !ids.includes(id, index + 1))
+
+                        for (let f of allfiles) {
+                            await myED.addFile({
+                                matiere: mat.matiere,
+                                libelle: f.nom,
+                                fileid: f.id, 
+                                type: f.type,
+                                date: str_date
+                            })
+                        }
 
                         let allDocuments = await window.api.storage_get(data, "fichiers")
                         if (typeof allDocuments === "undefined") {

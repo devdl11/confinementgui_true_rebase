@@ -15,7 +15,8 @@ const { SelfCrypto } = require('./src/crypto');
 const { IPC_on_manager } = require("./src/ons/ons_manager")
 const { remote_storage_manager } = require("./src/storage/remote_storage_manager")
 const {notification_manager} = require("./src/notification_manager")
-const {License} = require("./src/license_manager")
+const {License} = require("./src/license_manager");
+const { ED_BDD } = require('./src/edapi/internal-storage');
 
 function logDev(msg) {
   if (isDev) {
@@ -47,6 +48,8 @@ class ConfinementGui {
     this.notification_manager = new notification_manager(this)
     this.waiting_registration = false
     this.is_firebase_init_success = false
+
+    this.ED_BDD = new ED_BDD()
 
     //On bind
 
@@ -84,7 +87,8 @@ class ConfinementGui {
     
     this.ed_events_manager = new ed_events_manager({
       ed_callback: this.onEDLogged,
-      ed_get: this.getEDinst
+      ed_get: this.getEDinst,
+      storage: this.ED_BDD
     })
     this.app_initer()
     this.loadEvents()
@@ -454,7 +458,8 @@ class ConfinementGui {
         nodeIntegration: false,
         enableRemoteModule: false,
         contextIsolation: true,
-        preload: __dirname + "/src/registration_preload.js"
+        preload: __dirname + "/src/registration_preload.js",
+        devTools: isDev
       }
     })
 
@@ -481,6 +486,7 @@ class ConfinementGui {
         enableRemoteModule: false,
         contextIsolation: true,
         preload: __dirname + "/src/firebase_preload.js",
+        devTools: isDev
       }
     })
 
@@ -512,7 +518,8 @@ class ConfinementGui {
         nodeIntegration: false,
         enableRemoteModule: false,
         contextIsolation: true,
-        preload: __dirname + "/src/main_preload.js"
+        preload: __dirname + "/src/main_preload.js",
+        devTools: isDev
       }
     })
 
@@ -545,7 +552,8 @@ class ConfinementGui {
         nodeIntegration: false,
         contextIsolation: true,
         enableRemoteModule: false,
-        preload: path.join(__dirname, "/src/worker_preload.js")
+        preload: path.join(__dirname, "/src/worker_preload.js"),
+        devTools: isDev
       }
     })
     const startUrl = process.env.ELECTRON_START_URL || path.join(__dirname, '../build/index.html');
@@ -553,7 +561,9 @@ class ConfinementGui {
     logDev("[MAIN INFO] Loading url " + url2 + "...")
     // this.worker.loadFile("./public/this.worker.html")
     this.worker.loadFile(url2)
-    this.worker.webContents.openDevTools()
+    if (isDev){
+      this.worker.webContents.openDevTools()
+    }
     
     
     

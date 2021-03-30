@@ -35,6 +35,10 @@ contextBridge.exposeInMainWorld(
         downloadHomeworkFile: async (...args) => {return await ipcRenderer.invoke("ed_downloadHomeworkFile", ...args)},
         getEDT: async (...args) => {return await ipcRenderer.invoke("ed_getEDT", ...args)},
         getHomeWorkByDate: async (...args) => {return await ipcRenderer.invoke("ed_getHomeWorkByDate", ...args)},
+        getHomework: async (...args) => {return await ipcRenderer.invoke("ed_gethomework", ...args)},
+        addHomework: async (...args) => {return await ipcRenderer.invoke("ed_addhomework", ...args)},
+        getFile: async (...args) => {return await ipcRenderer.invoke("ed_getfile", ...args)},
+        addFile: async (...args) => {return await ipcRenderer.invoke("ed_addfile", ...args)},
     }
 )
 

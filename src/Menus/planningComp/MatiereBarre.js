@@ -92,7 +92,7 @@ class MatiereBarre extends React.Component{
                 <input className={"UrlInput " + (this.incorrectInput ? "incorrectInput" : "")} name="UrlInput" onChange={(event)=>this.onInputChange(event.target.value)} onBlur={this.onInputUnFocused} value={this.state.url}></input>
                 
                     <div className="reminderDiv">
-                        <div className="autoRemindTitle">Rappel automomatique: </div>
+                        <div className="autoRemindTitle">Rappel automatique: </div>
                         <div className="reminderSwitch">
                             <Switch checked={this.state.rappelState} color="primary" onChange={this.onSwitchChange}/>
                         </div>
