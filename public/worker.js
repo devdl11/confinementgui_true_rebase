@@ -59,7 +59,7 @@ async function getPlanning() {
     // console.log(currentMat)
 
     let data = await ed.getEDT()
-    // console.log(data)
+    console.log(data)
     window.api.storage_set(edt_data, "matieres", data)
     let matieres = {}
     for (let mati of data) {
@@ -149,7 +149,7 @@ async function internPlanningManager() {
                 ipcrend.send("take-currentcours", current_cours)
             }
         }
-        if (dbtTime - 120 <= current_time && current_time <= dbtTime + 40 && lastWarned !== mat["nom"]) {
+        if (dbtTime - 5 <= current_time && current_time <= dbtTime + 10 && lastWarned !== mat["nom"]) {
             console.log("Alert?")
             lastWarned = mat["nom"]
             console.log(lastWarned)
@@ -174,13 +174,21 @@ async function download(arg) {
     while (run) {
         internPlanningManager()
 
-        let tmpf = await window.api.storage_get(data, "fichiers")
-        console.log(await myED.getFile  ({}))
+        // let tmpf = await window.api.storage_get(data, "fichiers")
+        let tmpf = await myED.getFile({})
+
         if (tmpf.length > 0) {
             for (let doc of tmpf) {
-                let result = await ed.downloadHomeworkFile(doc) 
+                let formatted = {
+                    id: doc.fileid,
+                    nom: doc.libelle,
+                    type: doc.type,
+                    matiere: doc.matiere,
+                    date: doc.date
+                }
+                let result = await ed.downloadHomeworkFile(formatted) 
                 if (result === 200) {
-                    available_files.push(doc)
+                    available_files.push(formatted)
                 }
             }
         }
@@ -222,14 +230,11 @@ async function download(arg) {
                 let year = tempdate.getFullYear()
                 let str_date = year + "-" + month + "-" + day2
 
-                let oldData = {}
-                let tmp = await window.api.storage_get(data, "devoirs")
+                let oldData = 0
+                // let tmp = await window.api.storage_get(data, "devoirs")
+                let tmp = await myED.getHomework({})
                 if (typeof tmp !== "undefined") {
-                    oldData = tmp
-                }
-                let keys = Object.keys(oldData)
-                if (!keys.includes(str_date)) {
-                    oldData[str_date] = {}
+                    oldData = tmp.length
                 }
 
                 let matieres = data_recv.matieres
@@ -289,7 +294,7 @@ async function download(arg) {
                             } else {
                                 finalSeance["contenu"] = atob(contenueDS["contenu"])
                             }
-                            if (contenueDS["documents"] === 0) {
+                            if (contenueDS["documents"].length === 0) {
                                 finalSeance["documents"] = []
                             } else {
                                 let fdocs = []
@@ -309,30 +314,30 @@ async function download(arg) {
                         } else {
                             finalData["contenuDS"] = {}
                         }
-                        let alldataDate = {}
-                        tmp = await window.api.storage_get(data, "devoirs")
-                        if (typeof tmp !== "undefined") {
-                            alldataDate = tmp
-                        }
-                        let keys = Object.keys(alldataDate)
-                        if (!keys.includes(str_date)) {
-                            alldataDate[str_date] = {}
-                        }
+                        // let alldataDate = {}
+                        // tmp = await window.api.storage_get(data, "devoirs")
+                        // if (typeof tmp !== "undefined") {
+                        //     alldataDate = tmp
+                        // }
+                        // let keys = Object.keys(alldataDate)
+                        // if (!keys.includes(str_date)) {
+                        //     alldataDate[str_date] = {}
+                        // }
 
                         await myED.addHomework({
                             prof: finalData.prof, 
                             matiere: mat.matiere,
                             date: str_date,
                             iscontrol: finalData.hasEval,
-                            docsraw: JSON.stringify(finalData.documents),
-                            raw: JSON.stringify(finalData),
-                            contenu: finalData.contenuDevoir,
-                            cseance: Object.keys(finalData.contenuDS).length > 0 ? finalData.contenuDS.contenu : "",
-                            docsseance: Object.keys(finalData.contenuDS).length > 0 ? finalData.contenuDS.contenu : JSON.stringify([]),
+                            docsraw: btoa(JSON.stringify(finalData.documents)),
+                            raw: btoa(JSON.stringify(finalData)),
+                            contenu: btoa(finalData.contenuDevoir),
+                            cseance: Object.keys(finalData.contenuDS).length > 0 ? btoa(finalData.contenuDS.contenu) : btoa(""),
+                            docsseance: Object.keys(finalData.contenuDS).length > 0 && finalData.contenuDS.documents.length > 0 ? btoa(JSON.stringify(finalData.contenuDS.documents)) : btoa(JSON.stringify([])),
                         })
 
-                        alldataDate[str_date][mat["matiere"]] = finalData
-                        window.api.storage_set(data, "devoirs", alldataDate)
+                        // alldataDate[str_date][mat["matiere"]] = finalData
+                        // window.api.storage_set(data, "devoirs", alldataDate)
                         let allfiles = finalData["documents"]
                         if (Object.keys(finalData["contenuDS"]).length > 0 && finalData["contenuDS"]["documents"].length > 0) {
                             for (let file of finalData["contenuDS"]["documents"]) {
@@ -350,39 +355,39 @@ async function download(arg) {
                                 type: f.type,
                                 date: str_date
                             })
-                        }
-
-                        let allDocuments = await window.api.storage_get(data, "fichiers")
-                        if (typeof allDocuments === "undefined") {
-                            allDocuments = []
-                        }
-                        allDocuments = [...allDocuments, ...allfiles]
-                        ids = allDocuments.map(o => o.id)
-                        allDocuments = allDocuments.filter(({ id }, index) => !ids.includes(id, index + 1))
-                        window.api.storage_set(data, "fichiers", allDocuments)
-
-                        for (let doc of allfiles) {
-                            let result = await ed.downloadHomeworkFile(doc)
+                            let result = await ed.downloadHomeworkFile(f)
                             if (result === 200) {
-                                available_files.push(doc)
+                                available_files.push(f)
                             }
-
                         }
+
+                        // let allDocuments = await window.api.storage_get(data, "fichiers")
+                        // if (typeof allDocuments === "undefined") {
+                        //     allDocuments = []
+                        // }
+                        // allDocuments = [...allDocuments, ...allfiles]
+                        // ids = allDocuments.map(o => o.id)
+                        // allDocuments = allDocuments.filter(({ id }, index) => !ids.includes(id, index + 1))
+                        // window.api.storage_set(data, "fichiers", allDocuments)
+
+                        // for (let doc of allfiles) {
+                            
+
+                        // }
+
                         if (allfiles.length > 0) {
                             ipcrend.send("take-edfiles", available_files)
                         }
                     }
 
                     let alldataDate = {}
-                    tmp = await window.api.storage_get(data, "devoirs")
+                    // tmp = await window.api.storage_get(data, "devoirs")
+                    tmp = await myED.getHomework({})
                     if (typeof tmp !== "undefined") {
                         alldataDate = tmp
                     }
-                    let keys = Object.keys(alldataDate)
-                    if (!keys.includes(str_date)) {
-                        alldataDate[str_date] = {}
-                    }
-                    if (alldataDate[str_date] !== oldData[str_date]) {
+                    
+                    if (alldataDate.length !== oldData  ) {
                         ipcrend.send("take-homeworks", alldataDate)
                     }
                 }
@@ -427,7 +432,8 @@ ipcrend.on("get-edfiles", (event, args) => {
 ipcrend.on("get-homeworks", (event, args) => {
     (async () => {
         let dat = {}
-        let tmp = await window.api.storage_get(data, "devoirs")
+        // let tmp = await window.api.storage_get(data, "devoirs")
+        let tmp = await myED.getHomework({})
         if (typeof tmp !== "undefined") {
             dat = tmp
         }

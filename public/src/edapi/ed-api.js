@@ -72,7 +72,7 @@ class ED_Instance{
 
     async getEDT(callback){
         let today = new Date()
-        today = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14)
+        today = new Date(today.getFullYear(), today.getMonth(), today.getDate())
         let diff = today.getDay() - 1
         if(diff < 0){
             diff = 6
@@ -83,14 +83,23 @@ class ED_Instance{
         let day = startweek.getDate()
         day = day < 10 ? "0" + String(day):day
         let str_start = String(startweek.getFullYear()) + "-" + String(month) + "-" + String(day)
-        day = startweek.getDay() + 7
-        day = day < 10 ? "0" + String(day):day
-        let str_end = String(startweek.getFullYear()) + "-" + String(month) + "-" + String(day)
+        let endweek = new Date(startweek.getFullYear(), startweek.getMonth(), startweek.getDate() + 7)
+        day = endweek.getDate() < 10 ? "0" + String(endweek.getDate()):endweek.getDate()
+        month = endweek.getMonth() + 1
+        month = month < 10? "0" + String(month): month
+        let str_end = String(endweek.getFullYear()) + "-" + String(month) + "-" + String(day)
         // console.log("data={\"dateDebut\":\""+str_start +"\", \"dateFin\":\""+str_end+"\", \"avecTrous\": false, \"token\":\"" + this.token+"\"}")
-
+        let payload = {
+            dateDebut: str_start,
+            dateFin: str_end,
+            avecTrous: false,
+            token: this.token
+        }
+        console.log(JSON.stringify(payload))
+        // content: "data={\"dateDebut\":\""+str_start +"\", \"dateFin\":\""+str_end+"\", \"avecTrous\": false, \"token\":\"" + this.token+"\"}",
         await urllib.request(API_URL + ED_URL.emploiedutemps.url.replace(":typeuser:", this.user_data["typeCompte"]).replace(":eleveid:", this.user_data["id"]),{
             method: ED_URL.downloadFile.method,
-                content: "data={\"dateDebut\":\""+str_start +"\", \"dateFin\":\""+str_end+"\", \"avecTrous\": false, \"token\":\"" + this.token+"\"}",
+                content: "data=" + JSON.stringify(payload),
                 headers:{
                     "content-type":"application/x-www-form-urlencoded"
                 },
@@ -107,6 +116,7 @@ class ED_Instance{
                     }
                 })
             }else{
+                console.log(data)
                 callback(data.data)
             }
         })

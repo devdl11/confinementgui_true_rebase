@@ -12,6 +12,8 @@ class EDAgenda extends React.Component{
         }
         this.backup = ""
         this.list_h = ""
+        
+        this.raw_data = []
         this.menus = {}
 
         this.onMenuClick = this.onMenuClick.bind(this)
@@ -28,7 +30,6 @@ class EDAgenda extends React.Component{
     onMenuClick(date, homeworks){
         this.backup = this.list_h
         this.list_h = <DateMenu callback={this.getBackOnclick} date={date} homeworks={homeworks}/>
-        console.log(this.list_h)
         this.setState({
             submenu: date
         })
@@ -37,24 +38,48 @@ class EDAgenda extends React.Component{
     componentDidMount(){
         
         window.ipcrend.on("take-homeworks", (event, args)=>{
+            console.log(args)
             if(args.length === 0){
+                this.raw_data = []
                 this.list_h = <div className="NoHomeworks">Aucun devoir</div>
-            }else{
+            }else if(args.length !== this.raw_data.length){
+                this.raw_data = args
+
                 this.menus = {}
                 this.list_h = ""
-                for (let date of Object.keys(args)){
-                    if(!Object.keys(this.menus).includes(date) && Object.keys(args[date]).length > 0){
-                        this.menus[date] = {}
-                    }else if(Object.keys(args[date]).length === 0){
-                        continue
+
+                let dates = []
+                args.forEach(element => {
+                    if (this.menus[element.date] === undefined){
+                        this.menus[element.date] = {}
                     }
-                    for(let mat of Object.keys(args[date])){
-                        if(!Object.keys(this.menus[date]).includes(mat)){
-                            this.menus[date][mat] = args[date][mat]
-                        }
+                    if (this.menus[element.date][element.matiere] === undefined){
+                        this.menus[element.date][element.matiere] = {}
                     }
                     
-                }
+                    this.menus[element.date][element.matiere][element.prof] = element
+                    dates.push(element.date)
+                })
+
+                console.log(dates)
+
+                let ids = dates.map(o => o.id)
+                dates = dates.filter(({ id }, index) => !ids.includes(id, index + 1))
+
+                // for (let date of Object.keys(args)){
+                //     if(!Object.keys(this.menus).includes(date) && Object.keys(args[date]).length > 0){
+                //         this.menus[date] = {}
+                //     }else if(Object.keys(args[date]).length === 0){
+                //         continue
+                //     }
+                //     for(let mat of Object.keys(args[date])){
+                //         if(!Object.keys(this.menus[date]).includes(mat)){
+                //             this.menus[date][mat] = args[date][mat]
+                //         }
+                //     }
+                    
+                // }
+
                 let keys = Object.keys(this.menus)
                 keys.sort((a,b)=>{
                     a = a.split('-').join('');
@@ -62,13 +87,17 @@ class EDAgenda extends React.Component{
                     return a.localeCompare(b); 
                 })
                 keys = keys.reverse()
-                this.list_h = keys.map((key)=>{
+
+                this.backup = keys.map((key)=>{
                     return <DateMenuSelector callback={this.onMenuClick} key={key} date={key} homeworks={this.menus[key]}/>
                 })
             }
-            this.setState({
-                homeworks: args
-            })
+            if(this.state.submenu === undefined){
+                this.list_h = this.backup
+                this.setState({
+                    homeworks: args.length
+                })
+            }
         })
         window.ipcrend.send("get-homeworks", {})
     }

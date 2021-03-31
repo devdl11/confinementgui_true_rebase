@@ -43,7 +43,7 @@ class BarreNav extends React.Component{
                 <div className="Etiquette">{this.name}</div>
                 <div className="ButCont">
                     <MenuButton ETitle="Fichiers ED" callBackClick={this.OnClickMenuHandler} ref={(rf) => this.menus["F_ED"] = rf} ECallBackArg="F_ED"/>
-                    <MenuButton ETitle="Fichiers PearlTrees" callBackClick={this.OnClickMenuHandler} ref={(rf) => this.menus["F_PT"] = rf} ECallBackArg="F_PT"/>
+                    {/* <MenuButton ETitle="Fichiers PearlTrees" callBackClick={this.OnClickMenuHandler} ref={(rf) => this.menus["F_PT"] = rf} ECallBackArg="F_PT"/> */}
                     <MenuButton ETitle="Agenda" callBackClick={this.OnClickMenuHandler} ref={(rf) => this.menus["AGND"] = rf} ECallBackArg="AGND"/>
                     <MenuButton ETitle="Planning" callBackClick={this.OnClickMenuHandler} ref={(rf) => this.menus["PLAN"] = rf} ECallBackArg="PLAN"/>
                 </div>

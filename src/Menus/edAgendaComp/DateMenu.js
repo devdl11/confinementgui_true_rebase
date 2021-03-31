@@ -11,7 +11,11 @@ class DateMenu extends React.Component{
         this.shower = ""
         let keys = Object.keys(this.homeworks)
         this.shower = keys.map((mat)=>{
-            return <MatiereHomework key={mat} matiere={mat} contents={this.homeworks[mat]}/>
+            return Object.keys(this.homeworks[mat]).map((key2)=>{
+                console.log(this.homeworks[mat][key2])
+                console.log(key2)
+                return <MatiereHomework key={mat + key2} matiere={mat} contents={this.homeworks[mat][key2]}/>
+            })
         })
     }
 

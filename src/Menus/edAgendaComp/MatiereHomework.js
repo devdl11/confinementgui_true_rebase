@@ -5,14 +5,11 @@ class MatiereHomework extends React.Component{
         super(props)
         this.matiere = props.matiere
         this.contents = props.contents
-        if(!Object.keys(this.contents["contenuDS"]).includes("documents")){
-            this.contents["contenuDS"]["documents"] = []
-        }
-        if(!Object.keys(this.contents["contenuDS"]).includes("contenu")){
-            this.contents["contenuDS"]["contenu"] = ""
-        }
+        console.log("DEV MATIERE HOMW")
+        console.log(this.contents)
+        
 
-        this.files = [...this.contents["documents"], ...this.contents["contenuDS"]["documents"]]
+        this.files = [...JSON.parse(atob(this.contents.docsraw)), ...JSON.parse(atob(this.contents.docsseance))]
         let ids = this.files.map(o => o.id)
         this.files = this.files.filter(({id}, index) => !ids.includes(id, index + 1))
         
@@ -39,12 +36,12 @@ class MatiereHomework extends React.Component{
                 <div className="Matiere">{this.matiere}</div>
                 <div className="Prof">{this.contents["prof"]}</div>
                 <div className="Content">
-                    <div className="toDO" dangerouslySetInnerHTML={{ __html: this.contents["contenuDevoir"].replaceAll("http", "http").replaceAll("href", "value")} }/>
+                    <div className="toDO" dangerouslySetInnerHTML={{ __html: atob(this.contents["contenu"]).replaceAll("http", "http").replaceAll("href", "value")} }/>
                     {
-                        this.contents["contenuDS"]["contenu"].length > 0 &&
+                        atob(this.contents["cseance"]).length > 0 &&
                         <div className="ContenuDS">
                             <div className="Title">Contenu de séance: </div>
-                            <div className="content" dangerouslySetInnerHTML={{ __html: this.contents["contenuDS"]["contenu"].replaceAll("http", "http").replaceAll("href", "value")}} />
+                            <div className="content" dangerouslySetInnerHTML={{ __html: atob(this.contents["cseance"]).replaceAll("http", "http").replaceAll("href", "value")}} />
                         </div>
                     }
                     {

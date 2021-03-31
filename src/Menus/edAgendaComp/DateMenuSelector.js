@@ -36,9 +36,10 @@ class DateMenuSelector extends React.Component{
         month[11] = "Décembre"
 
         this.date = weekday[dat.getDay()] + " " + splitted[2] + " " + month[dat.getMonth()]
-
         this.matieres = Object.keys(this.homeworks).map((key)=>{
-            return <div key={key} className="SubMatiereDate">{key}</div>
+            return Object.keys(this.homeworks[key]).map((key2)=>{
+                return <div key={key + key2} className="SubMatiereDate">{key}</div>
+            })
         })
 
         this.OnClickHandler = this.OnClickHandler.bind(this)

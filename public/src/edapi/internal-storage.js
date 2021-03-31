@@ -106,7 +106,13 @@ class ED_BDD {
         let commande = "SELECT * FROM devoirs WHERE "
         for(let key of Object.keys(args)){
             if (Object.keys(this.homeworks_fields).includes(key)){
-                commande += key + "=" + args[key] + " and "
+                if (typeof args[key] == "string"){
+                    commande += key + "='" + args[key] + "' and "
+                }else if(typeof args[key] == "boolean"){
+                    commande += key + "= " + (args[key] ? "1" : "0") + " and "
+                }else{
+                    commande += key + "= " + args[key] + " and "
+                }
             }
         }
         if (commande.substr(commande.length-"and ".length) === "and "){
@@ -115,10 +121,11 @@ class ED_BDD {
         if (Object.keys(args).length === 0){
             commande = "SELECT * FROM devoirs"
         }
-        console.log("DEV BDD: ", commande)
+        // console.log("DEV BDD: ", commande)
         return new Promise((resolve, reject) => {
             this.bdd.all(commande, (err, results)=>{
                 if (err){
+                    console.log(err)
                     resolve(null)
                 }else{
                     resolve(results)
@@ -132,14 +139,29 @@ class ED_BDD {
             return new Promise((resolve)=>{resolve(null)})
         }
         let commande = "INSERT INTO devoirs (prof, matiere, date, iscontrol, docsraw, contenu, cseance, docsseance, raw) values (?,?,?,?,?,?,?,?,?)"
-        return new Promise((resolve) => {resolve(this.bdd.run(commande, [args.prof, args.matiere, args.date, args.iscontrol, args.docsraw, args.contenu, args.cseance, args.docsseance, args.raw]))})
+        return new Promise((resolve) => {
+            (async()=>{
+                let result = await this.get_homework_by(args)
+                if(result.length === 0){
+                    resolve(this.bdd.run(commande, [args.prof, args.matiere, args.date, args.iscontrol, args.docsraw, args.contenu, args.cseance, args.docsseance, args.raw]))
+                }else{
+                    resolve(null)
+                }
+            })()
+        })
     }
 
     get_files_by(args){
         let commande = "SELECT * FROM fichiers WHERE "
         for(let key of Object.keys(args)){
             if (Object.keys(this.files_fields).includes(key)){
-                commande += key + "=" + args[key] + " and "
+                if (typeof args[key] == "string"){
+                    commande += key + "=\"" + args[key].replace("\"","\\\"") + "\" and "
+                }else if(typeof args[key] == "boolean"){
+                    commande += key + "= " + (args[key] ? "1" : "0") + " and " 
+                }else{
+                    commande += key + "= " + args[key] + " and "
+                }
             }
         }
         if (commande.substr(commande.length-"and ".length) === "and "){
@@ -148,10 +170,11 @@ class ED_BDD {
         if (Object.keys(args).length === 0){
             commande = "SELECT * FROM fichiers"
         }
-        console.log("DEV BDD: ", commande)
+        // console.log("DEV BDD: ", commande)
         return new Promise((resolve, reject) => {
             this.bdd.all(commande, (err, results)=>{
                 if (err){
+                    console.log(err)
                     resolve(null)
                 }else{
                     resolve(results)
@@ -165,7 +188,16 @@ class ED_BDD {
             return new Promise((resolve)=>{resolve(null)})
         }
         let commande = "INSERT INTO fichiers (matiere, libelle, fileid, type, date) values (?,?,?,?, ?)"
-        return new Promise((resolve)=>{resolve(this.bdd.run(commande, [args.matiere, args.libelle, args.fileid, args.type, args.date]))})
+        return new Promise((resolve)=>{
+            (async()=>{
+                let result = await this.get_files_by(args)
+                if(result.length === 0){
+                    resolve(this.bdd.run(commande, [args.matiere, args.libelle, args.fileid, args.type, args.date]))
+                }else{
+                    resolve(null)
+                }
+            })()
+        })
     }
 }
 

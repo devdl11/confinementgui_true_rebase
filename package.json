@@ -1,8 +1,10 @@
 {
   "name": "confinementgui",
   "author": {
-    "name": "David Luca"
+    "name": "David Luca",
+    "email": "dl11developer@gmail.com"
   },
+  "description":"Application centralisant ED et Pearltrees",
   "version": "0.1.0",
   "private": true,
   "homepage": "./",
@@ -36,7 +38,8 @@
   },
   "build": {
     "appId": "com.dl11.confinementGUI",
-    "productName": "Confinement GUI"
+    "productName": "Confinement GUI",
+    "copyright": "Copyright © 2021 David Luca"
   },
   "scripts": {
     "test": "craco test",
