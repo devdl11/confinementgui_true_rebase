@@ -17,6 +17,7 @@ const { remote_storage_manager } = require("./src/storage/remote_storage_manager
 const {notification_manager} = require("./src/notification_manager")
 const {License} = require("./src/license_manager");
 const { ED_BDD } = require('./src/edapi/internal-storage');
+const { internal_manager } = require('./src/internal_manager');
 
 function logDev(msg) {
   if (isDev) {
@@ -78,10 +79,12 @@ class ConfinementGui {
     this.post_init_firebase = this.post_init_firebase.bind(this)
     this.manage_close_events = this.manage_close_events.bind(this)
 
+    this.internal_app = new internal_manager()
     this.init_firebase()
     this.license = new License({
       listener: this.licenseRegistrationCallback,
     })
+
 
     this.onLoading()
     
@@ -92,6 +95,10 @@ class ConfinementGui {
     })
     this.app_initer()
     this.loadEvents()
+
+    if(!isDev){
+      console.log = function(...args){}
+    }
   }
 
   async init_crypto_app() {
@@ -116,12 +123,16 @@ class ConfinementGui {
         logDev("[MAIN INFO] Error Firebase not init!")
       }else{
         app.exit(-1)
+        return
       }
     }else{
       logDev("[MAIN INFO] Firebase loaded ! ")
       this.license.register_firebase(this.firebase_win.webContents)
-      this.license.start_verif().then(()=>{
-        this.createMainWindow()
+      this.internal_app.register_firebase(this.firebase_win.webContents)
+      this.internal_app.start_verif().then(()=> {
+        this.license.start_verif().then(()=>{
+          this.createMainWindow()
+        })
       })
     }
   }
@@ -498,13 +509,25 @@ class ConfinementGui {
     logDev("[MAIN INFO] Loading url " + url2 + "...")
     // this.worker.loadFile("./public/this.worker.html")
     this.firebase_win.loadFile(url2)
-    // this.firebase_win.webContents.openDevTools()
+    if(isDev){
+      this.firebase_win.webContents.openDevTools()
+    }
 
     logDev("[MAIN INFO] Firebase window created!")
     this.manage_close_events()
   }
 
   createMainWindow() {
+    if(!this.internal_app.can_start){
+      if(this.internal_app.has_update){
+        this.notification_manager.show_app_update_available()
+      }else{
+        this.notification_manager.show_app_cant_start()
+      }
+      app.exit(-1)
+      return
+    }
+
 
     if(!this.license.has_license){
       this.createRegistrationWindow()

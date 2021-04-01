@@ -44,6 +44,10 @@ class License {
             (async () => {
                 try{
                     this.has_license = await this.check_license();
+                    if (!this.has_license && this.is_file){
+                        filemanager.unlinkSync(this.file_path)
+                        this.is_file = false
+                    }
                 }catch(err){
                     console.error(err)
                 }finally{
@@ -96,7 +100,32 @@ class License {
         const publicK = Buffer.from(PUBLIC_KEY, "ascii")
         const sign = Buffer.from(splitted[0], "hex")
         const res = checker.verify(publicK, sign)
-        return res
+        if(!await is_online()){
+            return res
+        }else{
+            return new Promise((resolve, reject) =>{
+                ipcMain.once("license_result", function (event, result) {
+                    if (typeof result === "object") {
+                        if (!result.actif) {
+                            resolve(false)
+                            return
+                        }
+                        // console.log(verify)
+                        const checker2 = crypto.createVerify("RSA-SHA256")
+                        checker2.update(val, "ascii")
+                        const sign2 = Buffer.from(result.id, "hex")
+                        const res2 = checker2.verify(publicK, sign2)
+                        
+                        resolve(res2)
+                        
+                    } else {
+                        resolve(false)
+                    }
+                })
+
+                this.firebase.send("get-license", prenom, nom)
+            })
+        }
     }
 
 

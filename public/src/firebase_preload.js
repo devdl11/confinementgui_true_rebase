@@ -4,7 +4,9 @@ const channels = [
     "get-license",
     "license_result",
     "firebase_inited",
-    "set-used"
+    "set-used", 
+    "get-status",
+    "on-status"
 ]
 
 contextBridge.exposeInMainWorld(

@@ -116,7 +116,7 @@ class ED_Instance{
                     }
                 })
             }else{
-                console.log(data)
+                // console.log(data)
                 callback(data.data)
             }
         })
@@ -173,7 +173,7 @@ async function login(username, password, callback){
                 buttons:["Ok"],
                 defaultId:0,
                 title:"Erreur",
-                message:data !== undefined ? data.message || "Une erreur est survenue lors de la connexion!" : "Une erreur est survenue!",
+                message:(data !== undefined ? data.message || "Une erreur est survenue lors de la connexion!" : "Une erreur est survenue!") + "\nRedémarrage nécessaire pour la synchronisation auto et les notifs.",
                 noLink:true
             })
             callback(undefined)

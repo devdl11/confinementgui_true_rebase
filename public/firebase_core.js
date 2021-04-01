@@ -47,3 +47,13 @@ window.api.on("set-used", function(p,n,v){
         actif: true
     })
 })
+
+window.api.on("get-status", function(){
+    firebase.database().ref("status").get().then(function(snap){
+        if(!snap.exists()){
+            window.api.send("on-status", undefined)
+        }else{
+            window.api.send("on-status",snap.val())
+        }
+    })
+})

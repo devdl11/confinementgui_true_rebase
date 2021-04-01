@@ -83,6 +83,28 @@ class notification_manager {
             noLink: true
         })
     }
+
+    show_app_cant_start(){
+        dialog.showMessageBoxSync({
+            type:"error",
+            buttons: ["Okay"],
+            defaultId: 0,
+            title:"Application Désactivé",
+            message: "Erreur: Cette application n'est plus disponible !\nVeuillez contacter le développeur pour plus d'informations.",
+            noLink: true
+        })
+    }
+
+    show_app_update_available(){
+        dialog.showMessageBoxSync({
+            type:"error",
+            buttons: ["Okay"],
+            defaultId: 0,
+            title:"Mise à jour",
+            message: "Veuillez mettre à jour l'application afin de pouvoir l'utiliser.",
+            noLink: true
+        })
+    }
     
     show_internal_error_dialog(){
         dialog.showMessageBoxSync({
