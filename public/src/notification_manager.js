@@ -31,14 +31,6 @@ class notification_manager {
             urgency: "critical",
             timeoutType: "never"
         })
-        
-        notificat.addListener("click", function(){
-            console.log("CLICKED!")
-            if(url !== null){
-                console.log("CLICKED!2")
-                new open_external_url(null).build(null)(url)
-            }
-        })
 
         notificat.once("click", (event, args) =>{
             console.log("CLICKED!")

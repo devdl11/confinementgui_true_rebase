@@ -542,7 +542,7 @@ class ConfinementGui {
         enableRemoteModule: false,
         contextIsolation: true,
         preload: __dirname + "/src/main_preload.js",
-        devTools: isDev
+        devTools: true
       }
     })
 
@@ -576,7 +576,7 @@ class ConfinementGui {
         contextIsolation: true,
         enableRemoteModule: false,
         preload: path.join(__dirname, "/src/worker_preload.js"),
-        devTools: isDev
+        devTools: true
       }
     })
     const startUrl = process.env.ELECTRON_START_URL || path.join(__dirname, '../build/index.html');
