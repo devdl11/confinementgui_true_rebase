@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.Login {
+  left: 30%;
+  width: 40%;
+  top: 40%;
+  border-radius: 12px;
+  @apply absolute object-center bg-gray-400;
+}
+
+
+.Login > .titre {
+  text-align: center;
+  @apply relative text-center text-2xl font-semibold text-red-700;
+}
+
+.Login > .content {
+  left: 10%;
+  @apply relative;
+}
+
+.Login > .content > input {
+  border-radius: 7px;
+  padding-left: 5px;
+  margin-bottom: 10px;
+}
+
+.Login > .content > #password {
+  width: 24ch;
+  left: 3px;
+  @apply relative;
+}
+
+.Login > .content > #submit {
+  width: 37ch;
+  @apply relative text-center bg-blue-600 text-gray-200;
+}
+
+.Login > .content > #submit:hover {
+  @apply bg-blue-400;
+}
+
+.Login > .content > #submit:disabled {
+  @apply bg-blue-300;
+}
+

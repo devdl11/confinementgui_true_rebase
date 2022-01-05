@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.EDAgenda{
+    @apply bg-blue-400;
+}
+
+.EDAgenda > .Barrnav{
+    height: 10%;
+    @apply text-center bg-blue-600 text-white relative cursor-default;
+}
+
+.EDAgenda > .Barrnav > .Titre{
+    @apply text-2xl cursor-default;
+}
+
+.DateMenuSelector{
+    margin: 2% 1%;
+    padding-left: 1%;
+    border: 2px solid;
+    border-radius: 8px;
+    @apply bg-gray-200 border-blue-500 relative;
+}
+
+.DateMenuSelector > .Title{
+    @apply text-xl;
+}
+
+.DateMenuSelector:hover, #Today:hover {
+    border-width: 6px;
+    @apply bg-yellow-200 border-green-600;
+}
+
+.DateMenuSelector > .Contents{
+    left: 2%;
+    border-left: 3px solid;
+    margin-bottom: 0.5%;
+    @apply relative border-blue-500;
+}
+
+.DateMenuSelector > .Contents > .SubMatiereDate{
+    margin-left: 0.5%;
+}
+
+#Today{
+    @apply bg-green-300;
+}
+
+.DateMenu > .nav {
+    @apply bg-blue-800 text-gray-100 text-center cursor-default;
+}
+
+.DateMenu > .nav > .Title{
+    @apply text-2xl underline;
+}
+
+.DateMenu > .nav > .Back{
+    @apply text-lg block;
+}
+
+.DateMenu > .nav > .Back:hover{
+    @apply text-red-500 underline;
+}
+
+.DateMenu > .Displayer > .MatiereHomework{
+    margin: 1% 2%;
+    border-radius: 8px;
+    border: 4px solid;
+    @apply bg-gray-200 border-blue-500 relative;
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Matiere{
+    @apply text-xl underline text-center;
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Prof{
+    right: 0px;
+    margin-right: 1%;
+    @apply text-lg relative text-right;
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Content{
+    padding: 0% 2%;
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Content > .ContenuDS {
+    padding: 1% 0%; 
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Content > .ContenuDS > .Title{
+    @apply text-center text-lg text-red-700;
+}
+
+
+.DateMenu > .Displayer > .MatiereHomework > .Content > .ContenuDS > .content{
+    border-right: 3px solid;
+    border-left: 3px solid;
+    padding: 0% 0.5%;
+    @apply border-yellow-600;
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Content > .Files {
+    padding: 1% 0%; 
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Content > .Files > .Title{
+    @apply text-center text-lg text-red-700;
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Content > .Files > .content{
+    border-right: 3px solid;
+    border-left: 3px solid;
+    padding: 0% 0.5%;
+    @apply border-green-600 cursor-default;
+}
+
+.DateMenu > .Displayer > .MatiereHomework > .Content > .Files > .content > .filename:hover{
+    @apply underline text-blue-500;
+}

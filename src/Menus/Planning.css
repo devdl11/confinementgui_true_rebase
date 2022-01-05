@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.Planning{
+    @apply bg-gray-800;
+}
+
+.Planning > .Nav{
+    height: 10%;
+    @apply text-center bg-blue-600 text-white relative cursor-default;
+}
+
+.Planning > .Nav > .Title{
+    @apply text-2xl cursor-default;
+}
+
+.Planning > .Nav > .SubTitle{
+    @apply text-lg inline-block;
+}
+
+.Planning > .Nav > .CoursName{
+    margin-left: 0.5%;
+    @apply text-lg inline relative;
+}
+
+.Planning > .content > .NoMatieres{
+    @apply relative text-center text-xl text-red-600;
+}
+
+.Planning > .content > .MatiereBarre{
+    margin: 0.5% 1%;
+    padding-bottom: 0.25%;
+    border-radius: 6px;
+    @apply relative bg-gray-300 text-gray-800;
+}
+
+.Planning > .content > .MatiereBarre > .Matiere{
+    margin-left: 1%;
+    @apply inline-block text-lg underline cursor-default;
+}
+
+.Planning > .content > .MatiereBarre > .MatiereClick:hover{
+    @apply text-red-800;
+}
+
+.Planning > .content > .MatiereBarre > .Prof{
+    margin-left: 0.75%;
+    @apply inline-block text-lg;
+}
+
+.Planning > .content > .MatiereBarre > .action{
+    margin-left: 0.5%;
+    margin-bottom: 1%;
+    @apply relative;
+}
+
+.Planning > .content > .MatiereBarre > .action > .labelInput{
+    @apply inline-block relative;
+}
+
+.Planning > .content > .MatiereBarre > .action > .UrlInput{
+    margin-left: 0.5%;  
+    border-radius: 6%;
+    width: 40%;
+    @apply inline-block relative;
+}
+
+.Planning > .content > .MatiereBarre > .action > .incorrectInput{
+    border: 3px solid;
+    @apply border-red-600;
+}
+
+.Planning > .content > .MatiereBarre > .action > .reminderDiv{
+    right: 0;
+    bottom: 0;
+    margin-right: 1%;
+    @apply absolute;
+}
+
+
+.Planning > .content > .MatiereBarre > .action > .reminderDiv >.autoRemindTitle{
+    @apply inline-block relative;
+}
+
+.Planning > .content > .MatiereBarre > .action >  .reminderDiv > .reminderSwitch{
+    @apply inline-block relative;
+}

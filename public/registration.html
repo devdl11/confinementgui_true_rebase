@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>Enregistrement</title>
+        <link rel="stylesheet" href="tailwind.output.css"/>
+        <style>
+            .mybut:disabled{
+                pointer-events: none;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-800 relative">
+        <div class="text-center text-gray-200 underline text-2xl">
+            License Registration 
+        </div>
+        <div class="relative bg-gray-600 rounded-sm text-center" style="margin: 2% 10%;">
+            <div class="text-lg text-gray-200">Prénom</div>
+            <input class="rounded-lg text-center" id="fname"/>
+            <div class="text-lg text-gray-200">Nom</div>
+            <input class="rounded-lg text-center" style="margin-bottom: 2%;" id="name"/><br>
+            <input type="button" value="Valider" class="rounded-sm mybut hover:bg-yellow-700 hover:text-white disabled:opacity-20" style="padding: 0 2%; margin-bottom: 1%;" onclick="register(event)"/>
+        </div>
+
+        <script>
+            async function register(ev){
+                ev.target.disabled = true;
+                let name = document.getElementById("name").value;
+                let fname = document.getElementById("fname").value;
+                if(fname === "" || name === "" || fname === undefined || name === undefined){
+                    ev.target.disabled= false;
+                    return
+                }
+                let res = await window.api.register(fname, name)
+                ev.target.disabled= false;
+            }
+        </script>
+    </body>
+</html>
