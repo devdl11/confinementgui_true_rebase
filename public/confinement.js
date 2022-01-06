@@ -546,7 +546,7 @@ class ConfinementGui {
       }
     })
 
-    this.mainwin.setResizable(false)
+    this.mainwin.setResizable(true)
     this.mainwin.setMenuBarVisibility(false)
 
     //load the index.html from a url

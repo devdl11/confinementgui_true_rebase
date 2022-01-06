@@ -39,9 +39,9 @@ class BarreNav extends React.Component{
 
     render(){
         return (
-            <div className="NavBar">
+            <div className="NavBar float-left">
                 <div className="Etiquette">{this.name}</div>
-                <div className="ButCont">
+                <div className="ButCont flex flex-col gap-3 justify-center items-center p-4">
                     <MenuButton ETitle="Fichiers ED" callBackClick={this.OnClickMenuHandler} ref={(rf) => this.menus["F_ED"] = rf} ECallBackArg="F_ED"/>
                     {/* <MenuButton ETitle="Fichiers PearlTrees" callBackClick={this.OnClickMenuHandler} ref={(rf) => this.menus["F_PT"] = rf} ECallBackArg="F_PT"/> */}
                     <MenuButton ETitle="Agenda" callBackClick={this.OnClickMenuHandler} ref={(rf) => this.menus["AGND"] = rf} ECallBackArg="AGND"/>
