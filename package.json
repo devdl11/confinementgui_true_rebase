@@ -4,7 +4,7 @@
     "name": "David Luca",
     "email": "dl11developer@gmail.com"
   },
-  "description":"Application centralisant ED et Pearltrees",
+  "description": "Application centralisant ED et Pearltrees",
   "version": "0.5.0",
   "private": true,
   "homepage": "./",
@@ -34,7 +34,8 @@
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "urllib": "^2.36.1",
     "wait-on": "^5.2.1",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "webpack": "^4.44.2"
   },
   "build": {
     "appId": "com.dl11.confinementGUI",
