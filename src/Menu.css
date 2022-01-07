@@ -7,8 +7,6 @@
 }
 
 .MenuDisplayer {
-    width: 80%;
-    left: 20%;
     height: 100%;
     @apply relative overflow-hidden;
 }

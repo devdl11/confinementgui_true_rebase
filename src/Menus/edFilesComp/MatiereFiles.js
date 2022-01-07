@@ -38,8 +38,8 @@ class MatiereFiles extends React.Component{
         return(
             <div>
                 <div className="MatiereMenu">
-                    <div className="MatiereTitle">{this.matiere}</div>
-                    <div className="BackMatiere" onClick={this.callbck}>Retour en arrière</div>
+                    <div className="MatiereTitle text-center text-lg">{this.matiere}</div>
+                    <div className="BackMatiere text-center cursor-pointer underline" onClick={this.callbck}>Retour en arrière</div>
                     <div className="DatesList">
                         {this.shower}
                     </div>

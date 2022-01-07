@@ -56,7 +56,7 @@ class FileBarre extends React.Component{
     render(){
         return(
             <div className="FileBarre">
-                <div className="FileName">{this.name}</div> <div className={this.isAvailable ? "OpenButton" : "Unavailable"} onClick={this.onClickOpen}>{this.isAvailable ? "Ouvrir" : "Indisponible"}</div> {this.isAvailable && <div className="DeleteButton" onClick={this.onClickRemove}>Supprimer</div>}
+                <div className="FileName">{this.name}</div> <div className={this.isAvailable ? "OpenButton cursor-pointer" : "Unavailable"} onClick={this.onClickOpen}>{this.isAvailable ? "Ouvrir" : "Indisponible"}</div> {this.isAvailable && <div className="DeleteButton text-red-900 dark:text-red-400 cursor-pointer" onClick={this.onClickRemove}>Supprimer</div>}
             </div>
         )
     }

@@ -14,7 +14,7 @@ class MenuButton extends React.Component{
 
     render(){
         return(
-            <input type="button" onClick={() => {this.props.callBackClick(this.props.ECallBackArg)}} className="MenuButton" ref={this.myref} value={this.title}></input>
+            <input type="button" onClick={() => {this.props.callBackClick(this.props.ECallBackArg)}} className="MenuButton w-36 rounded-md p-1 shadow-md bg-gray-50 dark:bg-gray-800  cursor-pointer" ref={this.myref} value={this.title}></input>
         )
     }
 }

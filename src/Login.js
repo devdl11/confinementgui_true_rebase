@@ -45,18 +45,15 @@ class Login extends React.Component {
     render() {
         if(this.state.edint === null){
             return (
-                <div className="Login">
-                    <div className="titre">Login EcoleDirecte</div>
-                    <br/>
-                    <div className="content">
+                <div className="Login items-center justify-center flex h-screen bg-white">
+                    <form className="content grid grid-cols-2 max-w-s gap-4 bg-gray-100 p-5 rounded-md">
+                        <h1 className="titre text-center">Login EcoleDirecte</h1>
                         <label htmlFor="username">Nom d'utilisateur: </label>    
-                        <input name="username" maxLength="20" id="username" ref={this.username_in}></input>
-                        <br/>
+                        <input className="bg-transparent border-b-2 border-grey focus:border-black focus:outline-none" name="username" maxLength="20" id="username" ref={this.username_in}></input>
                         <label htmlFor="password">Mot de passe: </label>    
-                        <input name="password" maxLength="30" id="password" type="password" ref={this.password_in}></input>
-                        <br/>
-                        <input id="submit" value="Se connecter" type="button" ref={this.buttonsub} onClick={(el) => {this.EDlogin(el)}}></input>
-                    </div>
+                        <input className="bg-transparent border-b-2 border-grey focus:border-black focus:outline-none" name="password" maxLength="30" id="password" type="password" ref={this.password_in}></input>
+                        <input className="rounded-md bg-gray-200 p-1"id="submit" value="Se connecter" type="submit" ref={this.buttonsub} onClick={(el) => {el.preventDefault();this.EDlogin(el)}}></input>
+                    </form>
                 </div>
                 );
             }else{
