@@ -89,7 +89,7 @@ class EDAgenda extends React.Component{
                 keys = keys.reverse()
 
                 this.backup = keys.map((key)=>{
-                    return <DateMenuSelector callback={this.onMenuClick} key={key} date={key} homeworks={this.menus[key]}/>
+                    return <DateMenuSelector  callback={this.onMenuClick} key={key} date={key} homeworks={this.menus[key]}/>
                 })
             }
             if(this.state.submenu === undefined){
