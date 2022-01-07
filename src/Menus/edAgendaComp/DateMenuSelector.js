@@ -51,9 +51,9 @@ class DateMenuSelector extends React.Component{
 
     render(){
         return(
-            <div className="DateMenuSelector bg-gray-50 my-2 p-2 shadow-md rounded-md hover:bg-gray-100 cursor-pointer" id={this.isToday ? "Today": ""} onClick={this.OnClickHandler}>
+            <div className="DateMenuSelector bg-gray-50 dark:bg-gray-800  my-2 p-2 shadow-md rounded-md hover:bg-gray-100 cursor-pointer" id={this.isToday ? "Today": ""} onClick={this.OnClickHandler}>
                 <div className="Title">{this.date}</div>
-                <div className="Contents ml-1 border-l-4 border-gray-300">{this.matieres}</div>
+                <div className="Contents pl-2 ml-1 border-l-4 border-gray-300 dark:border-gray-700">{this.matieres}</div>
             </div>
         )
     }

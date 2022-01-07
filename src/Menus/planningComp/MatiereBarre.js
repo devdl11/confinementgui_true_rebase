@@ -84,7 +84,7 @@ class MatiereBarre extends React.Component{
 
     render(){
         return (
-            <div className="MatiereBarre bg-gray-50 m-4 p-2 shadow-md rounded-md">
+            <div className="MatiereBarre bg-gray-50 dark:bg-gray-800  m-4 p-2 shadow-md rounded-md">
                 <div className={"Matiere " + (this.state.url !== "" ? "MatiereClick": "")} onClick={this.onClickTitle}>{this.matiere}</div>
                 <div className="Prof">{this.prof}</div><br/>
                 <div className="action">

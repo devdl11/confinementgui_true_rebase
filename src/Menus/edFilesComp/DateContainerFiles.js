@@ -56,7 +56,7 @@ class DateContainerFiles extends React.Component{
 
     render(){
         return(
-            <div className="DateContainer rounded-md my-2 p-2 shadow-md bg-gray-50">
+            <div className="DateContainer rounded-md my-2 p-2 shadow-md bg-gray-50 dark:bg-gray-800 ">
                 <div className="DateTitle text-center mb-2">{this.str_date}</div>
                 <div className="DateFiles">
                     {this.state.fileList}

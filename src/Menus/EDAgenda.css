@@ -35,7 +35,7 @@
 }
 
 .DateMenu > .Displayer > .MatiereHomework {
-    @apply bg-gray-50 rounded-md shadow-md m-4;
+    @apply bg-gray-50 dark:bg-gray-800  rounded-md shadow-md m-4;
 }
 
 .DateMenu > .Displayer > .MatiereHomework > .Matiere {
@@ -57,7 +57,7 @@
 }
 
 .DateMenu > .Displayer > .MatiereHomework > .Content > .ContenuDS > .content {
-    @apply border-l-4 border-gray-300 pl-2;
+    @apply border-l-4 border-gray-300 dark:border-gray-700 pl-2 ml-1;
 }
 
 .DateMenu > .Displayer > .MatiereHomework > .Content > .Files {
@@ -65,7 +65,7 @@
 }
 
 .DateMenu > .Displayer > .MatiereHomework > .Content > .Files > .content {
-    @apply border-l-4 border-gray-300 pl-2 cursor-pointer;
+    @apply border-l-4 border-gray-300 dark:border-gray-700 pl-2  ml-1 cursor-pointer;
 }
 
 .DateMenu

@@ -50,7 +50,7 @@ class EDFiles extends React.Component{
                     }
                 }
                 this.list_f = Object.keys(this.menus).map((key)=>{
-                    return <div className="MatiereButton p-2 bg-gray-50 shadow-md m-2 text-center cursor-pointer rounded-md" onClick={this.onMenuClick} key={key}>{key}</div>
+                    return <div className="MatiereButton p-2 bg-gray-50 dark:bg-gray-800  shadow-md m-2 text-center cursor-pointer rounded-md" onClick={this.onMenuClick} key={key}>{key}</div>
                 })
             }
             this.setState({
